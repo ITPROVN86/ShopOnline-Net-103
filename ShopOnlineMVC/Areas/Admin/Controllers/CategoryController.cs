@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ShopBusinessLogic.Models;
+using ShopOnlineMVC.App_Code;
 
 namespace ShopOnlineMVC.Areas.Admin.Controllers
 {
@@ -65,7 +66,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
             {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
-                SetAlert("Cập nhật dữ liệu thành công!", "success");
+                SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -105,6 +106,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 {
                     _context.Update(category);
                     await _context.SaveChangesAsync();
+                    SetAlert(Constant.UPDATE_SUCCESS, "success");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -138,6 +140,32 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
             }
 
             return View(category);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteId(int id)
+        {
+            try
+            {
+                var category = _context.Categories.Find(id);
+                if (category == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy bản ghi" });
+                }
+                _context.Categories.Remove(category);
+
+                _context.SaveChanges();
+                SetAlert("Xoá thành công", "success");
+                /*return Json(new { success = true, id = id});*/
+                return Json(new
+                {
+                    status = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         // POST: Admin/Category/Delete/5

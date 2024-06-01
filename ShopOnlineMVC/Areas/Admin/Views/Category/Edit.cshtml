@@ -1,39 +1,75 @@
 ﻿@model ShopBusinessLogic.Models.Category
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa";
 }
-
-<h1>Edit</h1>
-
-<h4>Category</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="CategoryId" />
-            <div class="form-group">
-                <label asp-for="CategoryName" class="control-label"></label>
-                <input asp-for="CategoryName" class="form-control" />
-                <span asp-validation-for="CategoryName" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<link href="~/Admin/js/iCheck/skins/minimal/minimal.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/red.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/green.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/blue.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/yellow.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/purple.css" rel="stylesheet">
+<header class="panel-heading">
+    Cập nhật Danh mục Sản phẩm
+</header>
+<div class="processing-preview hidden">
+</div>
+<div class="panel-body">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="CategoryId" />
+                <div class="form-group">
+                    <div class="row col-lg-6">
+                        <label asp-for="CategoryName" class="control-label">Tên danh mục sản phẩm</label>
+                        <input asp-for="CategoryName" class="form-control" placeholder="Nhập tên danh mục sản phẩm" />
+                    </div>
+                    <span asp-validation-for="CategoryName" class="text-danger col-lg-6"></span>
+                </div>
+                <div style="clear: both">&nbsp;</div>
+                <div class="form-group icheck minimal-blue">
+                    <div class="row checkbox single-row">
+                        <input class="form-check-input" asp-for="Status" />
+                        @Html.DisplayNameFor(model => model.Status)
+                    </div>
+                </div>
+                <div style="clear: both">&nbsp;</div>
+                <div class="form-group">
+                    @Html.ActionLink("Quay trở lại", "Index", "Category", null, new { @class = "btn btn-primary" })
+                    <input type="submit" value="Cập nhật" class="btn btn-danger" onclick="return DisplayProgressMessage(this, 'Đang cập nhật...');" />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function DisplayProgressMessage(ctl, msg) {
+            //if use the submit button, you can use event.preventDefault to prevent the default submit form behavior.
+            event.preventDefault();
+            // Turn off the "Save" button and change text
+            $(ctl).prop("disabled", true).val(msg);
+            // Gray out background on page
+            //$("body").addClass("submit-progress-bg");
+            // Wrap in setTimeout so the UI can update the spinners
+            //$(".processing-preview").removeClass("hidden");
+            //submit the form.
+            setTimeout(function () {
+                $("form").submit();
+                $(".processing-preview").addClass("hidden");
+                $("body").removeClass("submit-progress-bg");
+                $(ctl).prop("disabled", false).val("Cập nhật");
+            }, 1000);
+            return false;
+        }
+    </script>
+    <script src="~/Admin/js/iCheck/jquery.icheck.js"></script>
+    <!--icheck init -->
+    <script src="~/Admin/js/icheck-init.js"></script>
 }

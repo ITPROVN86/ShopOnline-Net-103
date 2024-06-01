@@ -11,12 +11,13 @@
         @Html.ActionLink("Tạo mới", "Create", "Category", null, new { @class = "btn btn-danger" })
     </p>
     <div class="text-align">
-        @if (TempData["AlertMessage"] != null)
-        {
-            <div id="AlertBox" class="alert @TempData["Type"]">
-
-                @TempData["AlertMessage"]
-            </div>
+        @{
+            if (TempData["AlertMessage"] != null)
+            {
+                <div id="alertBox" class="alert @TempData["Type"]">
+                    @TempData["AlertMessage"]
+                </div>
+            }
         }
     </div>
     <div class="row form-body">
@@ -44,8 +45,9 @@
                                 @Html.DisplayFor(modelItem => item.Status)
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-danger">Edit</a>&nbsp;
-                                <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger">Delete</a>
+                                <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-danger">Cập nhật</a>&nbsp;
+                                <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger">Xoá</a>
+                                <a href="#" class="delete-link" data-id="@item.CategoryId" data-confirm="Bạn có thật sự muốn xoá?" data-toggle="modal" data-target="#confirmModal">Xoá</a>
                             </td>
                         </tr>
                     }
@@ -54,9 +56,30 @@
         </div>
     </div>
 </div>
-@section scripts {
-        $(function () {
-            $('#alertBox').removeClass('hide');
-            $('#alertBox').delay(5000).slideUp(500);
-        })
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Bạn có đồng ý thực hiện việc xoá không?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script src="~/admin/controllers/CategoryController.js"></script>
+
 }
