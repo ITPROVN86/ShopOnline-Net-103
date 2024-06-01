@@ -15,5 +15,6 @@ namespace ShopRepository
         void Update(Category category);
         void Delete(int id);
         IEnumerable<Category> GetCategoryByName(string name);
+        bool ChangeStatus(int id);
     }
 }

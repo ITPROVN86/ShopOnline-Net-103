@@ -42,12 +42,11 @@
                                 @Html.DisplayFor(modelItem => item.CategoryName)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Status)
+                                <a href="#" class="btn @(item.Status ? "btn-primary":"btn-danger") btn-active" data-id="@item.CategoryId">@(item.Status ? "Bật" : "Tắt")</a>
                             </td>
                             <td>
                                 <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-danger">Cập nhật</a>&nbsp;
-                                <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger">Xoá</a>
-                                <a href="#" class="delete-link" data-id="@item.CategoryId" data-confirm="Bạn có thật sự muốn xoá?" data-toggle="modal" data-target="#confirmModal">Xoá</a>
+                                <a href="#" class="delete-link btn btn-danger" data-id="@item.CategoryId" data-confirm="Bạn có thật sự muốn xoá?" data-toggle="modal" data-target="#confirmModal">Xoá</a>
                             </td>
                         </tr>
                     }
@@ -81,5 +80,4 @@
 
 @section scripts{
     <script src="~/admin/controllers/CategoryController.js"></script>
-
 }

@@ -39,5 +39,9 @@ namespace ShopRepository
         {
             CategoryDao.Instance.Update(category);
         }
+        public bool ChangeStatus(int id)
+        {
+            return CategoryDao.Instance.ChangeStatus(id);
+        }
     }
 }

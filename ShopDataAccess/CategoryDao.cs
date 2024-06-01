@@ -1,4 +1,5 @@
-﻿using ShopBusinessLogic.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopBusinessLogic.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,6 @@ namespace ShopDataAccess
 {
     public class CategoryDao:SingletonBase<CategoryDao>
     {
-        private Net103Context _context;
         public IEnumerable<Category> GetCategoryAll()
         {
             return _context.Categories.ToList();
@@ -46,6 +46,14 @@ namespace ShopDataAccess
         public IEnumerable<Category> GetCategoryByName(string name)
         {
             return _context.Categories.Where(u => u.CategoryName.Contains(name)).ToList();
+        }
+
+        public bool ChangeStatus(int id)
+        {
+            var category = _context.Categories.Find(id);
+            category.Status = !category.Status;
+            _context.SaveChanges();
+            return category.Status;
         }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ShopBusinessLogic.Models;
 using ShopOnlineMVC.App_Code;
+using ShopRepository;
 
 namespace ShopOnlineMVC.Areas.Admin.Controllers
 {
@@ -16,36 +17,19 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
     [Authorize(AuthenticationSchemes = "Admin")]
     public class CategoryController : BaseController
     {
-        private readonly Net103Context _context;
+        //private readonly Net103Context _context;
+        ICategoryRepository categoryRepository = null;
 
-        public CategoryController(Net103Context context)
+
+        public CategoryController()
         {
-            _context = context;
+            categoryRepository = new CategoryRepository();
         }
 
         // GET: Admin/Category
         public async Task<IActionResult> Index()
         {
-              return _context.Categories != null ? 
-                          View(await _context.Categories.ToListAsync()) :
-                          Problem("Entity set 'Net103Context.Categories'  is null.");
-        }
-
-        // GET: Admin/Category/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Categories == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
+            var category = categoryRepository.GetAllCategory();
             return View(category);
         }
 
@@ -64,8 +48,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                categoryRepository.Add(category);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
@@ -75,12 +58,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         // GET: Admin/Category/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Categories == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories.FindAsync(id);
+            var category = categoryRepository.GetCategoryById(Convert.ToInt32(id));
             if (category == null)
             {
                 return NotFound();
@@ -95,50 +73,12 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Status")] Category category)
         {
-            if (id != category.CategoryId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                    SetAlert(Constant.UPDATE_SUCCESS, "success");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.CategoryId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                categoryRepository.Update(category);
+                SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
-        }
-
-        // GET: Admin/Category/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Categories == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
             return View(category);
         }
 
@@ -147,16 +87,13 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         {
             try
             {
-                var category = _context.Categories.Find(id);
+                var category = categoryRepository.GetCategoryById(Convert.ToInt32(id));
                 if (category == null)
                 {
                     return Json(new { success = false, message = "Không tìm thấy bản ghi" });
                 }
-                _context.Categories.Remove(category);
-
-                _context.SaveChanges();
-                SetAlert("Xoá thành công", "success");
-                /*return Json(new { success = true, id = id});*/
+                categoryRepository.Delete(id);
+                SetAlert(Constant.DELETE_SUCCESS, "success");
                 return Json(new
                 {
                     status = true
@@ -168,28 +105,14 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
             }
         }
 
-        // POST: Admin/Category/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public JsonResult ChangeStatus(int id)
         {
-            if (_context.Categories == null)
+            var result = categoryRepository.ChangeStatus(id);
+            return Json(new
             {
-                return Problem("Entity set 'Net103Context.Categories'  is null.");
-            }
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
-            {
-                _context.Categories.Remove(category);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CategoryExists(int id)
-        {
-          return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
+                status = result
+            });
         }
     }
 }
