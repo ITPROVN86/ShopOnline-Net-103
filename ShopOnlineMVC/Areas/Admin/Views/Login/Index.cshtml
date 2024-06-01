@@ -1,0 +1,71 @@
+﻿@model ShopOnlineMVC.Areas.Admin.Models.UserLogin
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <!--Core CSS -->
+    <link href="~/Admin/bs3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Admin/css/bootstrap-reset.css" rel="stylesheet">
+    <link href="~/Admin/font-awesome/css/font-awesome.css" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="~/Admin/css/style.css" rel="stylesheet">
+    <link href="~/Admin/css/style-responsive.css" rel="stylesheet" />
+</head>
+<body class="login-body">
+    <div class="container">
+
+        <form asp-action="Index" class="form-signin">
+            <h2 class="form-signin-heading">Trang đăng nhập</h2>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="login-wrap">
+                @{
+                    if (TempData["AlertMessage"] != null)
+                    {
+                        <div id="alertBox" class="alert @TempData["Type"]">
+                            @TempData["AlertMessage"]
+                        </div>
+                    }
+                }
+
+                    <div class="form-group">
+                        <label asp-for="UserName" class="control-label"></label>
+                        <input asp-for="UserName" class="form-control" placeholder="Nhập tên đăng nhập" autofocus />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                    <input type="submit" value="Đăng nhập" class="btn btn-lg btn-login btn-block" />
+                    </div>
+           
+            </div>
+        </form>
+
+    </div>
+    <script src="~/Admin/js/jquery.js"></script>
+    <script src="~/Admin/bs3/js/bootstrap.min.js"></script>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+    <script>
+        $(function () {
+            $('#alertBox').removeClass('hide');
+            $('#alertBox').delay(5000).slideUp(500);
+        })
+    </script>
+</body>
+</html>

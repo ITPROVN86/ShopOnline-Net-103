@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ShopBusinessLogic.Models.Category>
+
+@{
+    ViewData["Title"] = "Trang Danh mục Sản phẩm";
+}
+<header class="panel-heading">
+    Danh mục Sản phẩm
+</header>
+<div class="panel-body">
+    <p>
+        @Html.ActionLink("Tạo mới", "Create", "Category", null, new { @class = "btn btn-danger" })
+    </p>
+    <div class="text-align">
+        @if (TempData["AlertMessage"] != null)
+        {
+            <div id="AlertBox" class="alert @TempData["Type"]">
+
+                @TempData["AlertMessage"]
+            </div>
+        }
+    </div>
+    <div class="row form-body">
+        <div class="form-group">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Tên danh mục sản phẩm
+                        </th>
+                        <th>
+                            Trạng thái
+                        </th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CategoryName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-danger">Edit</a>&nbsp;
+                                <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section scripts {
+        $(function () {
+            $('#alertBox').removeClass('hide');
+            $('#alertBox').delay(5000).slideUp(500);
+        })
+}
