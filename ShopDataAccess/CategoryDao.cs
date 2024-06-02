@@ -14,11 +14,11 @@ namespace ShopDataAccess
 
         public IEnumerable<Category> GetCategoryAll()
         {
-            return _context.Categories.AsNoTracking().ToList();
+            return _context.Categories.AsNoTrackingWithIdentityResolution().ToList();
         }
         public Category GetCategoryById(int id)
         {
-            var category = _context.Categories.Find(id);
+            var category = _context.Categories.AsNoTrackingWithIdentityResolution().FirstOrDefault(c => c.CategoryId == id);
             if (category == null) return null;
 
             return category;
@@ -31,7 +31,7 @@ namespace ShopDataAccess
         public void Update(Category category)
         {
             _context = new Net103Context();
-            var existingItem = _context.Categories.AsNoTracking().FirstOrDefault(c=>c.CategoryId== category.CategoryId);
+            var existingItem = GetCategoryById(category.CategoryId);
             if (existingItem != null)
             {
                 // Cập nhật các thuộc tính cần thiết
@@ -47,7 +47,7 @@ namespace ShopDataAccess
         }
         public void Delete(int id)
         {
-            var category = _context.Categories.Find(id);
+            var category = GetCategoryById(id);
             if (category != null)
             {
                 _context.Categories.Remove(category);
@@ -62,7 +62,7 @@ namespace ShopDataAccess
 
         public bool ChangeStatus(int id)
         {
-            var category = _context.Categories.Find(id);
+            var category = GetCategoryById(id);
             category.Status = !category.Status;
             _context.SaveChanges();
             return category.Status;

@@ -57,8 +57,38 @@
             });
             //}
         });
+        $('#SearchString').on('change', function (event) {
+            event.preventDefault();
+            var form = $(event.target).parents('form');
+            form.submit();
+        });
 
-
+        $("#SearchString").autocomplete({
+            minLength: 0,
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Admin/Category/ListName",
+                    dataType: "json",
+                    data: {
+                        q: request.term
+                    },
+                    success: function (res) {
+                        response(res.data);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            },
+            focus: function (event, ui) {
+                $("#SearchString").val(ui.item.label);
+                return false;
+            },
+            select: function (event, ui) {
+                $("#SearchString").val(ui.item.label);
+                return false;
+            }
+        });
         $(function () {
             $('#AlertBox').removeClass('hide');
             $('#AlertBox').delay(5000).slideUp(500);

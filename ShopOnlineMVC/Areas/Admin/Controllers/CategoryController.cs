@@ -128,5 +128,24 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 status = result
             });
         }
+
+        public JsonResult ListName(string q)
+        {
+            if (!string.IsNullOrEmpty(q))
+            {
+                var data = categoryRepository.GetCategoryByName(q.ToLower());
+                var responseData = data.Select(c =>c.CategoryName).ToList();
+                return Json(new
+                {
+                    data = responseData,
+                    status = true
+                });
+            }
+            return Json(new
+            {
+                status = false
+            });
+        }
+
     }
 }
