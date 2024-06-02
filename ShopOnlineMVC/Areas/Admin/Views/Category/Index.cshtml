@@ -119,6 +119,19 @@
         </div>
     </div>
 </div>
+<!-- Modal Loading for BS 5 -->
+<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body  text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="mt-2">Đang xử lý, vui lòng đợi...</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @section scripts {
@@ -126,4 +139,5 @@
         DateTime currentDate = DateTime.Now;
     }
     <script src="~/admin/controllers/CategoryController.js?@currentDate"></script>
+
 }

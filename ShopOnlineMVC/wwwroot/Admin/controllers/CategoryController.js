@@ -89,6 +89,9 @@
                 return false;
             }
         });
+        $("#form-search").on("submit", function () {
+            $("#loadingModal").modal('show'); // Hiển thị modal loading
+        });
         $(function () {
             $('#AlertBox').removeClass('hide');
             $('#AlertBox').delay(5000).slideUp(500);
