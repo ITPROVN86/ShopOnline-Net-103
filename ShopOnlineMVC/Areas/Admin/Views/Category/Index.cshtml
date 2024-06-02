@@ -43,7 +43,12 @@
                     <tr>
                         <th>#</th>
                         <th>
-                            Tên danh mục sản phẩm
+                            @{
+                                var sortBy = Context.Request.Query["sortby"] == "name" ? "namedesc" : "name";
+                            }
+                            <a href="@Url.Action("Index","Category",new {sortBy=sortBy,SearchString=@Context.Request.Query["SearchString"]})">
+                                Tên danh mục sản phẩm
+                            </a>
                         </th>
                         <th>
                             Trạng thái

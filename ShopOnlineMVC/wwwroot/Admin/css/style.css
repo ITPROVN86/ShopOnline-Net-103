@@ -5736,3 +5736,6 @@ right: -1px;
 .table > tbody > tr > td {
     border: 1px solid #efefef;
 }
+.table > thead > tr > th>a{
+    color:white;
+}

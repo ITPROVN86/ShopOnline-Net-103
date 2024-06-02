@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -28,11 +29,22 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/Category
-        public async Task<IActionResult> Index(string? searchString, int? page)
+        public async Task<IActionResult> Index(string searchString, int? page, string sortby)
         {
             TempData["searchString"] = searchString != null ? searchString.ToLower() : "";
-            var category = categoryRepository.GetAllCategory().Where(c=>c.CategoryName.ToLower().Contains(searchString!=null? TempData["searchString"].ToString() : "")).ToPagedList(page ?? 1, 5);
-            return View(category);
+            var category = categoryRepository.GetAllCategory().Where(c => Common.ConvertToUnSign(c.CategoryName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
+            switch (sortby)
+            {
+                case "name":
+                    category = category.OrderBy(o => o.CategoryName);
+                    break;
+                case "namedesc":
+                    category = category.OrderByDescending(o => o.CategoryName);
+                    break;
+                default:
+                    break;
+            }
+            return View(category.ToPagedList(page ?? 1, 5));
         }
 
         // GET: Admin/Category/Create
