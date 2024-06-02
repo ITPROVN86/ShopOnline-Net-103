@@ -11,22 +11,21 @@ namespace ShopDataAccess
     {
         private static T _instance;
         private static readonly object _lock = new object();
-        public Net103Context _context = new Net103Context();
+        public static Net103Context _context = new Net103Context();
+
         public static T Instance
         {
             get
             {
-                if (_instance == null)
+                lock (_lock)
                 {
-                    lock (_lock)
+                   
+                    if (_instance == null)
                     {
-                        if (_instance == null)
-                        {
-                            _instance = new T();
-                        }
+                        _instance = new T();
                     }
+                    return _instance;
                 }
-                return _instance;
             }
         }
 

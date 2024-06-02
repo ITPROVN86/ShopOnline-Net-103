@@ -1,15 +1,17 @@
 ﻿@model IEnumerable<ShopBusinessLogic.Models.Category>
-
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
 @{
     ViewData["Title"] = "Trang Danh mục Sản phẩm";
 }
 <header class="panel-heading">
     Danh mục Sản phẩm
+    <div class="pull-right">
+        @Html.ActionLink(" Tạo mới", "Create", "Category", null, new { @class = "btn btn-primary fa fa-plus-square-o" })
+    </div>
 </header>
 <div class="panel-body">
-    <p>
-        @Html.ActionLink("Tạo mới", "Create", "Category", null, new { @class = "btn btn-danger" })
-    </p>
     <div class="text-align">
         @{
             if (TempData["AlertMessage"] != null)
@@ -22,9 +24,21 @@
     </div>
     <div class="row form-body">
         <div class="form-group">
+            <div class="col-md-6">
+                <div class="row">
+                    <input type="text" placeholder="Nhập từ khoá cần tìm kiếm" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-danger"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+        <div class="form-group" style="clear:both">&nbsp;</div>
+        <div class="form-group">
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>
                             Tên danh mục sản phẩm
                         </th>
@@ -35,23 +49,44 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @{
+                        int dem = 1;
+                        int page = Convert.ToInt32(Context.Request.Query["page"]);
+                        if (page > 1)
+                        {
+                            dem = (page - 1) * 5 + 1;
+                        }
+                    }
+
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td class="text-center">@dem</td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CategoryName)
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <a href="#" class="btn @(item.Status ? "btn-primary":"btn-danger") btn-active" data-id="@item.CategoryId">@(item.Status ? "Bật" : "Tắt")</a>
                             </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-danger">Cập nhật</a>&nbsp;
-                                <a href="#" class="delete-link btn btn-danger" data-id="@item.CategoryId" data-confirm="Bạn có thật sự muốn xoá?" data-toggle="modal" data-target="#confirmModal">Xoá</a>
+                            <td class="text-center">
+                                <a asp-action="Edit" title="Cập nhật" asp-route-id="@item.CategoryId" class="btn btn-danger"><i class="fa fa-edit"></i></a>&nbsp;
+                                <a href="#" title="Xoá" class="delete-link btn btn-danger" data-id="@item.CategoryId" data-confirm="Bạn có thật sự muốn xoá?" data-toggle="modal" data-target="#confirmModal"><i class="fa fa-times"></i></a>
                             </td>
                         </tr>
+                        dem = dem + 1;
                     }
                 </tbody>
             </table>
+            <div class="form-group">
+                @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", "Category", new { ViewBag.SearchName, page, SearchString = @Context.Request.Query["SearchString"], sortby = @Context.Request.Query["sortby"] }),
+                         PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+                {
+                    HttpMethod = "POST",
+                    UpdateTargetId = "targetElement",
+                    OnSuccess = "onAjaxSuccess",
+                    OnFailure = "onAjaxFailure"
+                }))
+            </div>
         </div>
     </div>
 </div>
@@ -78,6 +113,9 @@
 </div>
 
 
-@section scripts{
-    <script src="~/admin/controllers/CategoryController.js"></script>
+@section scripts {
+    @{
+        DateTime currentDate = DateTime.Now;
+    }
+    <script src="~/admin/controllers/CategoryController.js?@currentDate"></script>
 }

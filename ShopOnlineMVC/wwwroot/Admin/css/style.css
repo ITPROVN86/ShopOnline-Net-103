@@ -5726,3 +5726,13 @@ right: -1px;
     background-color: lightgray;
     opacity: .5;
 }
+.table > thead > tr > th {
+    border: 1px solid #efefef;
+    background: #1fb5ad;
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+}
+.table > tbody > tr > td {
+    border: 1px solid #efefef;
+}

@@ -10,7 +10,7 @@ namespace ShopDataAccess
 {
     public class UserDao: SingletonBase<UserDao>
     {
-        
+
         public IEnumerable<User> GetUserAll()
         {
             return _context.Users.ToList();

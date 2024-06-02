@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ShopBusinessLogic.Models;
+using ShopDataAccess;
+using ShopRepository;
 
 namespace ShopOnlineMVC
 {
@@ -23,6 +25,9 @@ namespace ShopOnlineMVC
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             builder.Services.AddScoped(typeof(Net103Context));
+            builder.Services.AddScoped<UserDao>();
+            builder.Services.AddScoped<CategoryDao>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 

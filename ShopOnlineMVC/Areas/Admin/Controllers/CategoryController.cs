@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using ShopBusinessLogic.Models;
 using ShopOnlineMVC.App_Code;
 using ShopRepository;
+using X.PagedList;
 
 namespace ShopOnlineMVC.Areas.Admin.Controllers
 {
@@ -27,9 +28,9 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/Category
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
-            var category = categoryRepository.GetAllCategory();
+            var category = categoryRepository.GetAllCategory().ToPagedList(page ?? 1, 5);
             return View(category);
         }
 

@@ -5,14 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ShopDataAccess
 {
     public class CategoryDao:SingletonBase<CategoryDao>
     {
+
         public IEnumerable<Category> GetCategoryAll()
         {
-            return _context.Categories.ToList();
+            return _context.Categories.AsNoTracking().ToList();
         }
         public Category GetCategoryById(int id)
         {
@@ -28,8 +30,18 @@ namespace ShopDataAccess
         }
         public void Update(Category category)
         {
-            var existingItem = _context.Categories.Find(category.CategoryId);
-            if (existingItem == null) return;
+            _context = new Net103Context();
+            var existingItem = _context.Categories.AsNoTracking().FirstOrDefault(c=>c.CategoryId== category.CategoryId);
+            if (existingItem != null)
+            {
+                // Cập nhật các thuộc tính cần thiết
+                _context.Entry(existingItem).CurrentValues.SetValues(category);
+            }
+            else
+            {
+                // Thêm thực thể mới nếu nó chưa tồn tại
+                _context.Categories.Add(category);
+            }
             _context.Categories.Update(category);
             _context.SaveChanges();
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ShopBusinessLogic.Models;
 
@@ -39,9 +40,10 @@ public partial class Net103Context : DbContext
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", true, true)
-                .Build(); 
+                .Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("NET103"));
         }
+        optionsBuilder.EnableSensitiveDataLogging();
     }
 
 
