@@ -28,9 +28,10 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/Category
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(string? searchString, int? page)
         {
-            var category = categoryRepository.GetAllCategory().ToPagedList(page ?? 1, 5);
+            TempData["searchString"] = searchString != null ? searchString.ToLower() : "";
+            var category = categoryRepository.GetAllCategory().Where(c=>c.CategoryName.ToLower().Contains(searchString!=null? TempData["searchString"].ToString() : "")).ToPagedList(page ?? 1, 5);
             return View(category);
         }
 

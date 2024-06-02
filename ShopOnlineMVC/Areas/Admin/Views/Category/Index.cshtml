@@ -23,16 +23,19 @@
         }
     </div>
     <div class="row form-body">
-        <div class="form-group">
-            <div class="col-md-6">
-                <div class="row">
-                    <input type="text" placeholder="Nhập từ khoá cần tìm kiếm" class="form-control">
+        @using (Html.BeginForm("Index", "Category", FormMethod.Get, new { id = "form-search" }))
+        {
+            <div class="form-group">
+                <div class="col-md-6">
+                    <div class="row">
+                        @Html.TextBox("SearchString", TempData["searchString"], null, new { @class = "form-control", @placeholder = "Nhập từ khoá cần tìm kiếm" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger"><i class="fa fa-search"></i> Tìm kiếm</button>
                 </div>
             </div>
-            <div class="col-md-6">
-                <button class="btn btn-danger"><i class="fa fa-search"></i> Tìm kiếm</button>
-            </div>
-        </div>
+        }
         <div class="form-group" style="clear:both">&nbsp;</div>
         <div class="form-group">
             <table class="table table-striped">
