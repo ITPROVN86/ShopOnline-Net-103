@@ -39,5 +39,9 @@ namespace ShopRepository
         {
             CategoryNewsDao.Instance.Update(categoryNews);
         }
+        public bool ChangeStatus(int id)
+        {
+            return CategoryNewsDao.Instance.ChangeStatus(id);
+        }
     }
 }

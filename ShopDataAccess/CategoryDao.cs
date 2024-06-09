@@ -2,16 +2,18 @@
 using ShopBusinessLogic.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ShopDataAccess
 {
     public class CategoryDao:SingletonBase<CategoryDao>
     {
-
         public IEnumerable<Category> GetCategoryAll()
         {
             return _context.Categories.AsNoTrackingWithIdentityResolution().ToList();
@@ -20,7 +22,6 @@ namespace ShopDataAccess
         {
             var category = _context.Categories.AsNoTrackingWithIdentityResolution().FirstOrDefault(c => c.CategoryId == id);
             if (category == null) return null;
-
             return category;
         }
         public void Add(Category category)
@@ -34,12 +35,10 @@ namespace ShopDataAccess
             var existingItem = GetCategoryById(category.CategoryId);
             if (existingItem != null)
             {
-                // Cập nhật các thuộc tính cần thiết
                 _context.Entry(existingItem).CurrentValues.SetValues(category);
             }
             else
             {
-                // Thêm thực thể mới nếu nó chưa tồn tại
                 _context.Categories.Add(category);
             }
             _context.Categories.Update(category);

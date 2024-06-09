@@ -1,4 +1,5 @@
 ﻿using ShopBusinessLogic.Models;
+using ShopDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace ShopRepository
         void Update(CategoryNews categoryNews);
         void Delete(int id);
         IEnumerable<CategoryNews> GetCategoryNewsByName(string name);
+
+        bool ChangeStatus(int id);
     }
 }

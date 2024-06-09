@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -17,27 +16,27 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
     [Authorize(AuthenticationSchemes = "Admin")]
-    public class CategoryController : BaseController
+    public class NewsCategoryController : BaseController
     {
-        ICategoryRepository categoryRepository = null;
+        ICategoryNewsRepository newsCategoryRepository;
 
-        public CategoryController()
+        public NewsCategoryController()
         {
-            categoryRepository = new CategoryRepository();
+            newsCategoryRepository = new CategoryNewsRepository();
         }
 
-        // GET: Admin/Category
-        public async Task<IActionResult> Index(string searchString, int? page, string sortby)
+        // GET: Admin/NewsCategory
+        public IActionResult Index(string searchString, int? page, string sortby)
         {
             TempData["searchString"] = searchString != null ? searchString.ToLower() : "";
-            var category = categoryRepository.GetAllCategory().Where(c => Common.ConvertToUnSign(c.CategoryName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
+            var category = newsCategoryRepository.GetAllCategoryNews().Where(c => Common.ConvertToUnSign(c.CategoryNewsName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
             switch (sortby)
             {
                 case "name":
-                    category = category.OrderBy(o => o.CategoryName);
+                    category = category.OrderBy(o => o.CategoryNewsName);
                     break;
                 case "namedesc":
-                    category = category.OrderByDescending(o => o.CategoryName);
+                    category = category.OrderByDescending(o => o.CategoryNewsName);
                     break;
                 default:
                     break;
@@ -45,66 +44,68 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
             return View(category.ToPagedList(page ?? 1, 5));
         }
 
-        // GET: Admin/Category/Create
+
+        // GET: Admin/NewsCategory/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/Category/Create
+        // POST: Admin/NewsCategory/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Status")] Category category)
+        public IActionResult Create([Bind("CategoryNewsId,CategoryNewsName,Status")] CategoryNews categoryNews)
         {
             if (ModelState.IsValid)
             {
-                categoryRepository.Add(category);
+                newsCategoryRepository.Add(categoryNews);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(categoryNews);
         }
 
-        // GET: Admin/Category/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Admin/NewsCategory/Edit/5
+        public IActionResult Edit(int? id)
         {
-            var category = categoryRepository.GetCategoryById(Convert.ToInt32(id));
-            if (category == null)
+            var newsCategory = newsCategoryRepository.GetCategoryNewsById(Convert.ToInt32(id));
+            if (newsCategory == null)
             {
                 return NotFound();
             }
-            return View(category);
+            return View(newsCategory);
         }
 
-        // POST: Admin/Category/Edit/5
+        // POST: Admin/NewsCategory/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Status")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryNewsId,CategoryNewsName,Status")] CategoryNews categoryNews)
         {
             if (ModelState.IsValid)
             {
-                categoryRepository.Update(category);
+                newsCategoryRepository.Update(categoryNews);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(categoryNews);
         }
 
+        // GET: Admin/NewsCategory/Delete/5
         [HttpPost]
         public JsonResult DeleteId(int id)
         {
             try
             {
-                var category = categoryRepository.GetCategoryById(Convert.ToInt32(id));
-                if (category == null)
+                var newsCategory = newsCategoryRepository.GetCategoryNewsById(Convert.ToInt32(id));
+                if (newsCategory == null)
                 {
                     return Json(new { success = false, message = "Không tìm thấy bản ghi" });
                 }
-                categoryRepository.Delete(id);
+                newsCategoryRepository.Delete(id);
                 SetAlert(Constant.DELETE_SUCCESS, "success");
                 return Json(new
                 {
@@ -120,7 +121,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         [HttpPost]
         public JsonResult ChangeStatus(int id)
         {
-            var result = categoryRepository.ChangeStatus(id);
+            var result = newsCategoryRepository.ChangeStatus(id);
             return Json(new
             {
                 status = result
@@ -131,8 +132,8 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         {
             if (!string.IsNullOrEmpty(q))
             {
-                var data = categoryRepository.GetCategoryByName(q.ToLower());
-                var responseData = data.Select(c =>c.CategoryName).ToList();
+                var data = newsCategoryRepository.GetCategoryNewsByName(q.ToLower());
+                var responseData = data.Select(c => c.CategoryNewsName).ToList();
                 return Json(new
                 {
                     data = responseData,
@@ -144,6 +145,5 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 status = false
             });
         }
-
     }
 }

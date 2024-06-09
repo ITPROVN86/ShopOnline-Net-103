@@ -1,7 +1,7 @@
-﻿@model ShopBusinessLogic.Models.Category
+﻿@model ShopBusinessLogic.Models.CategoryNews
 
 @{
-    ViewData["Title"] = "Cập nhật Danh mục Sản phẩm";
+    ViewData["Title"] = "Tạo mới danh mục Tin tức";
 }
 <link href="~/Admin/js/iCheck/skins/minimal/minimal.css" rel="stylesheet">
 <link href="~/Admin/js/iCheck/skins/minimal/red.css" rel="stylesheet">
@@ -9,23 +9,23 @@
 <link href="~/Admin/js/iCheck/skins/minimal/blue.css" rel="stylesheet">
 <link href="~/Admin/js/iCheck/skins/minimal/yellow.css" rel="stylesheet">
 <link href="~/Admin/js/iCheck/skins/minimal/purple.css" rel="stylesheet">
+
 <header class="panel-heading">
-    Cập nhật Danh mục Sản phẩm
+    Tạo mới Danh mục Tin tức
 </header>
 <div class="processing-preview hidden">
 </div>
 <div class="panel-body">
     <div class="row">
         <div class="col-md-12">
-            <form asp-action="Edit">
+            <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="CategoryId" />
                 <div class="form-group">
                     <div class="row col-lg-6">
-                        <label asp-for="CategoryName" class="control-label">Tên danh mục sản phẩm</label>
-                        <input asp-for="CategoryName" class="form-control" placeholder="Nhập tên danh mục sản phẩm" />
+                        <label asp-for="CategoryNewsName" class="control-label">Tên danh mục tin tức</label>
+                        <input asp-for="CategoryNewsName" class="form-control" placeholder="Nhập tên danh mục tin tức" />
                     </div>
-                    <span asp-validation-for="CategoryName" class="text-danger col-lg-6"></span>
+                    <span asp-validation-for="CategoryNewsName" class="text-danger col-lg-6"></span>
                 </div>
                 <div style="clear: both">&nbsp;</div>
                 <div class="form-group icheck minimal-blue">
@@ -36,14 +36,13 @@
                 </div>
                 <div style="clear: both">&nbsp;</div>
                 <div class="form-group">
-                    @Html.ActionLink("Quay trở lại", "Index", "Category", null, new { @class = "btn btn-primary" })
-                    <input type="submit" value="Cập nhật" class="btn btn-danger" onclick="return DisplayProgressMessage(this, 'Đang cập nhật...');" />
+                    @Html.ActionLink("Quay trở lại", "Index", "NewsCategory", null, new { @class = "btn btn-primary" })
+                    <input type="submit" value="Tạo mới" onclick="return DisplayProgressMessage(this, 'Đang cập nhật...');" class="btn btn-danger" />
                 </div>
             </form>
         </div>
     </div>
 </div>
-
 
 @section Scripts {
     @{
@@ -64,7 +63,7 @@
                 $("form").submit();
                 $(".processing-preview").addClass("hidden");
                 $("body").removeClass("submit-progress-bg");
-                $(ctl).prop("disabled", false).val("Cập nhật");
+                $(ctl).prop("disabled", false).val("Tạo mới");
             }, 1000);
             return false;
         }
