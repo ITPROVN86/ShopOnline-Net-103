@@ -18,8 +18,7 @@ namespace ShopDataAccess
             get
             {
                 lock (_lock)
-                {
-                   
+                { 
                     if (_instance == null)
                     {
                         _instance = new T();

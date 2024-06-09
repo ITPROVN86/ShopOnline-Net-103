@@ -16,7 +16,7 @@ namespace ShopDataAccess
         }
         public Role GetRoleById(int id)
         {
-            var role = _context.Roles.AsNoTrackingWithIdentityResolution().FirstOrDefault(c => c.RoleId == id);
+            var role = _context.Roles.FirstOrDefault(c => c.RoleId == id);
             if (role == null) return null;
 
             return role;
@@ -29,7 +29,7 @@ namespace ShopDataAccess
         public void Update(Role role)
         {
             _context = new Net103Context();
-            var existingItem = GetRoleById(role.RoleId);
+            var existingItem = _context.Roles.AsNoTrackingWithIdentityResolution().FirstOrDefault(r=>r.RoleId==role.RoleId);
             if (existingItem == null) return;
             _context.Roles.Update(role);
             _context.SaveChanges();

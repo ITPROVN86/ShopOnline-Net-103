@@ -62,7 +62,7 @@
                         int page = Convert.ToInt32(Context.Request.Query["page"]);
                         if (page > 1)
                         {
-                            dem = (page - 1) * 5 + 1;
+                            dem = (page - 1) * ViewBag.Page + 1;
                         }
                     }
 

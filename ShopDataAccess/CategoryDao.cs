@@ -14,13 +14,16 @@ namespace ShopDataAccess
 {
     public class CategoryDao:SingletonBase<CategoryDao>
     {
+        public CategoryDao() {
+            _context = new Net103Context();
+        }
         public IEnumerable<Category> GetCategoryAll()
         {
-            return _context.Categories.AsNoTrackingWithIdentityResolution().ToList();
+            return _context.Categories.ToList();
         }
         public Category GetCategoryById(int id)
         {
-            var category = _context.Categories.AsNoTrackingWithIdentityResolution().FirstOrDefault(c => c.CategoryId == id);
+            var category = _context.Categories.FirstOrDefault(c => c.CategoryId == id);
             if (category == null) return null;
             return category;
         }
@@ -32,7 +35,7 @@ namespace ShopDataAccess
         public void Update(Category category)
         {
             _context = new Net103Context();
-            var existingItem = GetCategoryById(category.CategoryId);
+            var existingItem = _context.Categories.AsNoTrackingWithIdentityResolution().FirstOrDefault(c=>c.CategoryId==category.CategoryId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(category);

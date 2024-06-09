@@ -41,7 +41,8 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 default:
                     break;
             }
-            return View(category.ToPagedList(page ?? 1, 5));
+            ViewBag.Page = 10;
+            return View(category.ToPagedList(page ?? 1, (int)ViewBag.Page));
         }
 
 

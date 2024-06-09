@@ -10,13 +10,18 @@ namespace ShopDataAccess
 {
     public class CategoryNewsDao : SingletonBase<CategoryNewsDao>
     {
+        public CategoryNewsDao()
+        {
+            _context = new Net103Context();
+        }
+
         public IEnumerable<CategoryNews> GetCategoryNewsAll()
         {
             return _context.CategoryNews.ToList();
         }
         public CategoryNews GetCategoryNewsById(int id)
         {
-            var categoryNews = _context.CategoryNews.AsNoTrackingWithIdentityResolution().FirstOrDefault(c => c.CategoryNewsId == id);
+            var categoryNews = _context.CategoryNews.FirstOrDefault(c => c.CategoryNewsId == id);
             if (categoryNews == null) return null;
 
             return categoryNews;
@@ -29,7 +34,7 @@ namespace ShopDataAccess
         public void Update(CategoryNews categoryNews)
         {
             _context = new Net103Context();
-            var existingItem = GetCategoryNewsById(categoryNews.CategoryNewsId);
+            var existingItem = _context.Categories.AsNoTrackingWithIdentityResolution().FirstOrDefault(c=>c.CategoryId==categoryNews.CategoryNewsId);
             if (existingItem == null) return;
             _context.CategoryNews.Update(categoryNews);
             _context.SaveChanges();
