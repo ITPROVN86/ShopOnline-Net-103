@@ -3,29 +3,7 @@
         common.registerEvent();
     },
     registerEvent: function () {
-        $('.btn-active').off('click').on('click', function (e) {
-            e.preventDefault();
-            var btn = $(this);
-            var id = btn.data('id');
-            $.ajax({
-                url: "/Admin/NewsCategory/ChangeStatus",
-                data: { id: id },
-                datatype: "json",
-                type: "POST",
-                success: function (response) {
-                    console.log(response);
-                    if (response.status == true) {
-                        btn.text('Bật');
-                        btn.removeClass('btn-danger').addClass('btn-primary');
-                    }
-                    else {
-                        btn.text('Tắt');
-                        btn.removeClass('btn-primary').addClass('btn-danger');
-
-                    }
-                }
-            });
-        });
+       
         $(document).on("click", ".delete-link", function (e) {
             e.preventDefault();
             var id = $(this).data("id");
@@ -41,13 +19,13 @@
             var id = $(this).data("id");
             //if (confirm($(this).data("confirm"))) {
             $.ajax({
-                url: "/Admin/NewsCategory/DeleteId/" + id,
+                url: "/Admin/Roles/DeleteId/" + id,
                 dataType: "json",
                 type: "POST",
                 contentType: "application/json;charset=UTF-8",
                 success: function (res) {
                     if (res.status == true) {
-                        window.location.href = '/Admin/NewsCategory';
+                        window.location.href = '/Admin/Roles';
                         //$("#getCodeModal").modal("toggle");
                     }
                 },
@@ -67,7 +45,7 @@
             minLength: 0,
             source: function (request, response) {
                 $.ajax({
-                    url: "/Admin/NewsCategory/ListName",
+                    url: "/Admin/Roles/ListName",
                     dataType: "json",
                     data: {
                         q: request.term
@@ -94,7 +72,7 @@
         });
         $(function () {
             $('#alertBox').removeClass('hide');
-            $('#alertBox').delay(3000).slideUp(500);
+            $('#alertBox').delay(5000).slideUp(500);
         });
     }
 }

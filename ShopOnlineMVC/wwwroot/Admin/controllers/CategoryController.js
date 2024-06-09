@@ -93,8 +93,8 @@
             $("#loadingModal").modal('show'); // Hiển thị modal loading
         });
         $(function () {
-            $('#AlertBox').removeClass('hide');
-            $('#AlertBox').delay(5000).slideUp(500);
+            $('#alertBox').removeClass('hide');
+            $('#alertBox').delay(5000).slideUp(500);
         });
     }
 }

@@ -1,4 +1,5 @@
-﻿using ShopBusinessLogic.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopBusinessLogic.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,13 @@ namespace ShopDataAccess
 {
     public class RoleDao:SingletonBase<RoleDao>
     {
-        private Net103Context _context;
         public IEnumerable<Role> GetRoleAll()
         {
             return _context.Roles.ToList();
         }
         public Role GetRoleById(int id)
         {
-            var role = _context.Roles.Find(id);
+            var role = _context.Roles.AsNoTrackingWithIdentityResolution().FirstOrDefault(c => c.RoleId == id);
             if (role == null) return null;
 
             return role;
@@ -28,14 +28,15 @@ namespace ShopDataAccess
         }
         public void Update(Role role)
         {
-            var existingItem = _context.Roles.Find(role.RoleId);
+            _context = new Net103Context();
+            var existingItem = GetRoleById(role.RoleId);
             if (existingItem == null) return;
             _context.Roles.Update(role);
             _context.SaveChanges();
         }
         public void Delete(int id)
         {
-            var role = _context.Roles.Find(id);
+            var role = GetRoleById(id);
             if (role != null)
             {
                 _context.Roles.Remove(role);
