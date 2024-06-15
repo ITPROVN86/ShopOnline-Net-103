@@ -95,6 +95,13 @@
             $('#alertBox').removeClass('hide');
             $('#alertBox').delay(5000).slideUp(500);
         });
+        
     }
 }
 common.init();
+function callIndexAction(select) {
+    $("#loadingModal").modal('show');
+    setTimeout(function () {
+        $("#form-search").submit();
+    }, 1000);
+}

@@ -32,7 +32,10 @@
                         @Html.TextBox("SearchString", TempData["searchString"], null, new { @class = "form-control", @placeholder = "Nhập từ khoá cần tìm kiếm" })
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
+                    @Html.DropDownList("roleId", (IEnumerable<SelectListItem>)ViewBag.RoleId, "All Roles", new { @class = "form-control", @id = "cboSearchRoleId", @onchange = "callIndexAction(this)" })
+                </div>
+                <div class="col-md-3">
                     <button class="btn btn-danger"><i class="fa fa-search"></i> Tìm kiếm</button>
                 </div>
             </div>
