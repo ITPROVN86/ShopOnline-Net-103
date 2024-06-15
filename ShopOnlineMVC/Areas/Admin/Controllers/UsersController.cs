@@ -51,9 +51,9 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
 
 
         // GET: Admin/Users/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName");
+            ViewData["RoleId"] = new SelectList(await roleRepository.GetAllRole(), "RoleId", "RoleName");
             return View();
         }
 
@@ -79,7 +79,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 if (string.IsNullOrEmpty(user.Password))
                 {
                     SetAlert(Constant.PASSWORD_FAIL, "error");
-                    ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+                    ViewData["RoleId"] = new SelectList(await roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
                     return View(user);
                 }
                 user.Password = Common.EncryptMD5(user.Password);
@@ -87,7 +87,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+            ViewData["RoleId"] = new SelectList(await roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
             return View(user);
         }
 
@@ -99,7 +99,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+            ViewData["RoleId"] = new SelectList(await roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
             return View(user);
         }
 
@@ -116,7 +116,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+            ViewData["RoleId"] = new SelectList(await roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
             return View(user);
         }
 

@@ -9,11 +9,11 @@ namespace ShopRepository
 {
     public interface IRoleRepository
     {
-        IEnumerable<Role> GetAllRole();
-        Role GetRoleById(int id);
-        void Add(Role role);
-        void Update(Role role);
-        void Delete(int id);
-        IEnumerable<Role> GetRoleByName(string name);
+        Task<IEnumerable<Role>> GetAllRole();
+        Task<Role> GetRoleById(int id);
+        Task Add(Role role);
+        Task Update(Role role);
+        Task Delete(int id);
+        Task<IEnumerable<Role>> GetRoleByName(string name);
     }
 }

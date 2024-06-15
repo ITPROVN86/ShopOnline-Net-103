@@ -10,34 +10,34 @@ namespace ShopRepository
 {
     public class RoleRepository : IRoleRepository
     {
-        public void Add(Role role)
+        public async Task Add(Role role)
         {
-            RoleDao.Instance.Add(role);
+            await RoleDao.Instance.Add(role);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            RoleDao.Instance.Delete(id);
+            await RoleDao.Instance.Delete(id);
         }
 
-        public IEnumerable<Role> GetAllRole()
+        public async Task<IEnumerable<Role>> GetAllRole()
         {
-            return RoleDao.Instance.GetRoleAll();
+            return await RoleDao.Instance.GetRoleAll();
         }
 
-        public Role GetRoleById(int id)
+        public async Task<Role> GetRoleById(int id)
         {
-            return RoleDao.Instance.GetRoleById(id);
+            return await RoleDao.Instance.GetRoleById(id);
         }
 
-        public IEnumerable<Role> GetRoleByName(string name)
+        public async Task<IEnumerable<Role>> GetRoleByName(string name)
         {
-            return RoleDao.Instance.GetRoleByName(name);
+            return await RoleDao.Instance.GetRoleByName(name);
         }
 
-        public void Update(Role role)
+        public async Task Update(Role role)
         {
-            RoleDao.Instance.Update(role);
+            await RoleDao.Instance.Update(role);
         }
     }
 }

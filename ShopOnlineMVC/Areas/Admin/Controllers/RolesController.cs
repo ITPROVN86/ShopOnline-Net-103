@@ -29,7 +29,8 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string searchString, int? page, string sortby)
         {
             TempData["searchString"] = searchString != null ? searchString.ToLower() : "";
-            var role = roleRepository.GetAllRole().Where(c => Common.ConvertToUnSign(c.RoleName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
+            var role = await roleRepository.GetAllRole();
+            role=role.Where(c => Common.ConvertToUnSign(c.RoleName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
             switch (sortby)
             {
                 case "name":
@@ -45,7 +46,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/Category/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View();
         }
@@ -59,7 +60,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                roleRepository.Add(role);
+                await roleRepository.Add(role);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
@@ -69,7 +70,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         // GET: Admin/Role/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var role = roleRepository.GetRoleById(Convert.ToInt32(id));
+            var role = await roleRepository.GetRoleById(Convert.ToInt32(id));
             if (role == null)
             {
                 return NotFound();
@@ -86,7 +87,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                roleRepository.Update(role);
+                await roleRepository.Update(role);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
@@ -94,16 +95,16 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteId(int id)
+        public async Task<JsonResult> DeleteId(int id)
         {
             try
             {
-                var role = roleRepository.GetRoleById(Convert.ToInt32(id));
+                var role = await roleRepository.GetRoleById(Convert.ToInt32(id));
                 if (role == null)
                 {
                     return Json(new { success = false, message = "Không tìm thấy bản ghi" });
                 }
-                roleRepository.Delete(id);
+                await roleRepository.Delete(id);
                 SetAlert(Constant.DELETE_SUCCESS, "success");
                 return Json(new
                 {
@@ -116,11 +117,11 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
             }
         }
 
-        public JsonResult ListName(string q)
+        public async Task<JsonResult> ListName(string q)
         {
             if (!string.IsNullOrEmpty(q))
             {
-                var data = roleRepository.GetRoleByName(q.ToLower());
+                var data = await roleRepository.GetRoleByName(q.ToLower());
                 var responseData = data.Select(c => c.RoleName).ToList();
                 return Json(new
                 {
