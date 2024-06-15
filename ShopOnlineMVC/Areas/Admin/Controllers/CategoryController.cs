@@ -30,7 +30,8 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string searchString, int? page, string sortby)
         {
             TempData["searchString"] = searchString != null ? searchString.ToLower() : "";
-            var category = categoryRepository.GetAllCategory().Where(c => Common.ConvertToUnSign(c.CategoryName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
+            var category = await categoryRepository.GetAllCategory();
+            category=category.Where(c => Common.ConvertToUnSign(c.CategoryName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
             switch (sortby)
             {
                 case "name":
@@ -47,7 +48,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/Category/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View();
         }
@@ -61,8 +62,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                categoryRepository.Add(category);
+                await categoryRepository.Add(category);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
@@ -72,7 +72,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         // GET: Admin/Category/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var category = categoryRepository.GetCategoryById(Convert.ToInt32(id));
+            var category = await categoryRepository.GetCategoryById(Convert.ToInt32(id));
             if (category == null)
             {
                 return NotFound();
@@ -89,7 +89,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                categoryRepository.Update(category);
+                await categoryRepository.Update(category);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
@@ -97,16 +97,16 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteId(int id)
+        public async Task<JsonResult> DeleteId(int id)
         {
             try
             {
-                var category = categoryRepository.GetCategoryById(Convert.ToInt32(id));
+                var category = await categoryRepository.GetCategoryById(Convert.ToInt32(id));
                 if (category == null)
                 {
                     return Json(new { success = false, message = "Không tìm thấy bản ghi" });
                 }
-                categoryRepository.Delete(id);
+                await categoryRepository.Delete(id);
                 SetAlert(Constant.DELETE_SUCCESS, "success");
                 return Json(new
                 {
@@ -120,20 +120,20 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult ChangeStatus(int id)
+        public async Task<JsonResult> ChangeStatus(int id)
         {
-            var result = categoryRepository.ChangeStatus(id);
+            var result = await categoryRepository.ChangeStatus(id);
             return Json(new
             {
                 status = result
             });
         }
 
-        public JsonResult ListName(string q)
+        public async Task<JsonResult> ListName(string q)
         {
             if (!string.IsNullOrEmpty(q))
             {
-                var data = categoryRepository.GetCategoryByName(q.ToLower());
+                var data = await categoryRepository.GetCategoryByName(q.ToLower());
                 var responseData = data.Select(c =>c.CategoryName).ToList();
                 return Json(new
                 {

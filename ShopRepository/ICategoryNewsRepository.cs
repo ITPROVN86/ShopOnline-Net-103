@@ -10,13 +10,13 @@ namespace ShopRepository
 {
     public interface ICategoryNewsRepository
     {
-        IEnumerable<CategoryNews> GetAllCategoryNews();
-        CategoryNews GetCategoryNewsById(int id);
-        void Add(CategoryNews categoryNews);
-        void Update(CategoryNews categoryNews);
-        void Delete(int id);
-        IEnumerable<CategoryNews> GetCategoryNewsByName(string name);
+        Task<IEnumerable<CategoryNews>> GetAllCategoryNews();
+        Task<CategoryNews> GetCategoryNewsById(int id);
+        Task Add(CategoryNews categoryNews);
+        Task Update(CategoryNews categoryNews);
+        Task Delete(int id);
+        Task<IEnumerable<CategoryNews>> GetCategoryNewsByName(string name);
 
-        bool ChangeStatus(int id);
+        Task<bool> ChangeStatus(int id);
     }
 }

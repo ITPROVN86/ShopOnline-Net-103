@@ -9,12 +9,12 @@ namespace ShopRepository
 {
     public interface ICategoryRepository
     {
-        IEnumerable<Category> GetAllCategory();
-        Category GetCategoryById(int id);
-        void Add(Category category);
-        void Update(Category category);
-        void Delete(int id);
-        IEnumerable<Category> GetCategoryByName(string name);
-        bool ChangeStatus(int id);
+        Task<IEnumerable<Category>> GetAllCategory();
+        Task<Category> GetCategoryById(int id);
+        Task Add(Category category);
+        Task Update(Category category);
+        Task Delete(int id);
+        Task<IEnumerable<Category>> GetCategoryByName(string name);
+        Task<bool> ChangeStatus(int id);
     }
 }

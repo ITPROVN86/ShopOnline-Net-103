@@ -14,28 +14,24 @@ namespace ShopDataAccess
 {
     public class CategoryDao:SingletonBase<CategoryDao>
     {
-        public CategoryDao() {
-            _context = new Net103Context();
-        }
-        public IEnumerable<Category> GetCategoryAll()
+        public async Task<IEnumerable<Category>> GetCategoryAll()
         {
-            return _context.Categories.ToList();
+            return await _context.Categories.ToListAsync();
         }
-        public Category GetCategoryById(int id)
+        public async Task<Category> GetCategoryById(int id)
         {
-            var category = _context.Categories.FirstOrDefault(c => c.CategoryId == id);
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
             if (category == null) return null;
             return category;
         }
-        public void Add(Category category)
+        public async Task Add(Category category)
         {
             _context.Categories.Add(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Update(Category category)
+        public async Task Update(Category category)
         {
-            _context = new Net103Context();
-            var existingItem = _context.Categories.AsNoTrackingWithIdentityResolution().FirstOrDefault(c=>c.CategoryId==category.CategoryId);
+            var existingItem = await GetCategoryById(category.CategoryId);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(category);
@@ -44,29 +40,30 @@ namespace ShopDataAccess
             {
                 _context.Categories.Add(category);
             }
-            _context.Categories.Update(category);
-            _context.SaveChanges();
+            
+            await _context.SaveChangesAsync();
         }
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var category = GetCategoryById(id);
+            var category = await GetCategoryById(id);
             if (category != null)
             {
                 _context.Categories.Remove(category);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public IEnumerable<Category> GetCategoryByName(string name)
+        public async Task<IEnumerable<Category>> GetCategoryByName(string name)
         {
-            return _context.Categories.Where(u => u.CategoryName.Contains(name)).ToList();
+            var category = _context.Categories;
+            return await category.Where(u => u.CategoryName.Contains(name)).ToListAsync();
         }
 
-        public bool ChangeStatus(int id)
+        public async Task<bool> ChangeStatus(int id)
         {
-            var category = GetCategoryById(id);
+            var category = await GetCategoryById(id);
             category.Status = !category.Status;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return category.Status;
         }
     }

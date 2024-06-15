@@ -26,10 +26,11 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/NewsCategory
-        public IActionResult Index(string searchString, int? page, string sortby)
+        public async Task<IActionResult> Index(string searchString, int? page, string sortby)
         {
             TempData["searchString"] = searchString != null ? searchString.ToLower() : "";
-            var category = newsCategoryRepository.GetAllCategoryNews().Where(c => Common.ConvertToUnSign(c.CategoryNewsName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
+            var category = await newsCategoryRepository.GetAllCategoryNews();
+            category=category.Where(c => Common.ConvertToUnSign(c.CategoryNewsName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
             switch (sortby)
             {
                 case "name":
@@ -57,11 +58,11 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("CategoryNewsId,CategoryNewsName,Status")] CategoryNews categoryNews)
+        public async Task<IActionResult> Create([Bind("CategoryNewsId,CategoryNewsName,Status")] CategoryNews categoryNews)
         {
             if (ModelState.IsValid)
             {
-                newsCategoryRepository.Add(categoryNews);
+                await newsCategoryRepository.Add(categoryNews);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
@@ -69,9 +70,9 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         // GET: Admin/NewsCategory/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            var newsCategory = newsCategoryRepository.GetCategoryNewsById(Convert.ToInt32(id));
+            var newsCategory = await newsCategoryRepository.GetCategoryNewsById(Convert.ToInt32(id));
             if (newsCategory == null)
             {
                 return NotFound();
@@ -88,7 +89,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                newsCategoryRepository.Update(categoryNews);
+                await newsCategoryRepository.Update(categoryNews);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
@@ -97,16 +98,17 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
 
         // GET: Admin/NewsCategory/Delete/5
         [HttpPost]
-        public JsonResult DeleteId(int id)
+        public async Task<JsonResult> DeleteId(int id)
         {
             try
             {
-                var newsCategory = newsCategoryRepository.GetCategoryNewsById(Convert.ToInt32(id));
+                var newsCategory = await newsCategoryRepository.GetCategoryNewsById(Convert.ToInt32(id));
                 if (newsCategory == null)
                 {
+                    SetAlert(Constant.DELETE_FAIL, "erro");
                     return Json(new { success = false, message = "Không tìm thấy bản ghi" });
                 }
-                newsCategoryRepository.Delete(id);
+                await newsCategoryRepository.Delete(id);
                 SetAlert(Constant.DELETE_SUCCESS, "success");
                 return Json(new
                 {
@@ -120,20 +122,20 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult ChangeStatus(int id)
+        public async Task<JsonResult> ChangeStatus(int id)
         {
-            var result = newsCategoryRepository.ChangeStatus(id);
+            var result = await newsCategoryRepository.ChangeStatus(id);
             return Json(new
             {
                 status = result
             });
         }
 
-        public JsonResult ListName(string q)
+        public async Task<JsonResult> ListName(string q)
         {
             if (!string.IsNullOrEmpty(q))
             {
-                var data = newsCategoryRepository.GetCategoryNewsByName(q.ToLower());
+                var data = await newsCategoryRepository.GetCategoryNewsByName(q.ToLower());
                 var responseData = data.Select(c => c.CategoryNewsName).ToList();
                 return Json(new
                 {

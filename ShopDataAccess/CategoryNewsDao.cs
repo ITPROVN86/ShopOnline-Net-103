@@ -10,55 +10,50 @@ namespace ShopDataAccess
 {
     public class CategoryNewsDao : SingletonBase<CategoryNewsDao>
     {
-        public CategoryNewsDao()
+        public async Task<IEnumerable<CategoryNews>> GetCategoryNewsAll()
         {
-            _context = new Net103Context();
+            return await _context.CategoryNews.ToListAsync();
         }
-
-        public IEnumerable<CategoryNews> GetCategoryNewsAll()
+        public async Task<CategoryNews> GetCategoryNewsById(int id)
         {
-            return _context.CategoryNews.ToList();
-        }
-        public CategoryNews GetCategoryNewsById(int id)
-        {
-            var categoryNews = _context.CategoryNews.FirstOrDefault(c => c.CategoryNewsId == id);
+            var categoryNews = await _context.CategoryNews.FirstOrDefaultAsync(c => c.CategoryNewsId == id);
             if (categoryNews == null) return null;
 
             return categoryNews;
         }
-        public void Add(CategoryNews categoryNews)
+        public async Task Add(CategoryNews categoryNews)
         {
             _context.CategoryNews.Add(categoryNews);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Update(CategoryNews categoryNews)
+        public async Task Update(CategoryNews categoryNews)
         {
-            _context = new Net103Context();
-            var existingItem = _context.Categories.AsNoTrackingWithIdentityResolution().FirstOrDefault(c=>c.CategoryId==categoryNews.CategoryNewsId);
+            var existingItem = await GetCategoryNewsById(categoryNews.CategoryNewsId);
             if (existingItem == null) return;
-            _context.CategoryNews.Update(categoryNews);
+            _context.Entry(existingItem).CurrentValues.SetValues(categoryNews);
             _context.SaveChanges();
         }
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var categoryNews = GetCategoryNewsById(id);
+            var categoryNews = await GetCategoryNewsById(id);
             if (categoryNews != null)
             {
                 _context.CategoryNews.Remove(categoryNews);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public IEnumerable<CategoryNews> GetCategoryNewsByName(string name)
+        public async Task<IEnumerable<CategoryNews>> GetCategoryNewsByName(string name)
         {
-            return _context.CategoryNews.Where(u => u.CategoryNewsName.Contains(name)).ToList();
+            var categoryNews = _context.CategoryNews;
+            return await categoryNews.Where(u => u.CategoryNewsName.Contains(name)).ToListAsync();
         }
 
-        public bool ChangeStatus(int id)
+        public async Task<bool> ChangeStatus(int id)
         {
-            var newsCategory = GetCategoryNewsById(id);
+            var newsCategory = await GetCategoryNewsById(id);
             newsCategory.Status = !newsCategory.Status;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return newsCategory.Status;
         }
     }

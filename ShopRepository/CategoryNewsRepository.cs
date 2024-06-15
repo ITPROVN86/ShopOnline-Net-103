@@ -10,38 +10,38 @@ namespace ShopRepository
 {
     public class CategoryNewsRepository : ICategoryNewsRepository
     {
-        public void Add(CategoryNews categoryNews)
+        public async Task Add(CategoryNews categoryNews)
         {
-            CategoryNewsDao.Instance.Add(categoryNews);
+            await CategoryNewsDao.Instance.Add(categoryNews);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            CategoryNewsDao.Instance.Delete(id);
+            await CategoryNewsDao.Instance.Delete(id);
         }
 
-        public IEnumerable<CategoryNews> GetAllCategoryNews()
+        public async Task<IEnumerable<CategoryNews>> GetAllCategoryNews()
         {
-            return CategoryNewsDao.Instance.GetCategoryNewsAll();
+            return await CategoryNewsDao.Instance.GetCategoryNewsAll();
         }
 
-        public CategoryNews GetCategoryNewsById(int id)
+        public async Task<CategoryNews> GetCategoryNewsById(int id)
         {
-            return CategoryNewsDao.Instance.GetCategoryNewsById(id);
+            return await CategoryNewsDao.Instance.GetCategoryNewsById(id);
         }
 
-        public IEnumerable<CategoryNews> GetCategoryNewsByName(string name)
+        public async Task<IEnumerable<CategoryNews>> GetCategoryNewsByName(string name)
         {
-            return CategoryNewsDao.Instance.GetCategoryNewsByName(name);
+            return await CategoryNewsDao.Instance.GetCategoryNewsByName(name);
         }
 
-        public void Update(CategoryNews categoryNews)
+        public async Task Update(CategoryNews categoryNews)
         {
-            CategoryNewsDao.Instance.Update(categoryNews);
+            await CategoryNewsDao.Instance.Update(categoryNews);
         }
-        public bool ChangeStatus(int id)
+        public async Task<bool> ChangeStatus(int id)
         {
-            return CategoryNewsDao.Instance.ChangeStatus(id);
+            return await CategoryNewsDao.Instance.ChangeStatus(id);
         }
     }
 }
