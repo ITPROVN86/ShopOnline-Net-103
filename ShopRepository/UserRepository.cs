@@ -10,24 +10,24 @@ namespace ShopRepository
 {
     public class UserRepository : IUserRepository
     {
-        public void Add(User user)
+        public async Task Add(User user)
         {
-            UserDao.Instance.Add(user);
+            await UserDao.Instance.Add(user);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            UserDao.Instance.Delete(id);
+            await UserDao.Instance.Delete(id);
         }
 
-        public IEnumerable<User> GetAllUser()
+        public async Task<IEnumerable<User>> GetAllUser()
         {
-            return UserDao.Instance.GetUserAll();
+            return await UserDao.Instance.GetUserAll();
         }
 
-        public User GetUserById(int id)
+        public async Task<User> GetUserById(int id)
         {
-            return UserDao.Instance.GetUserById(id);
+            return await UserDao.Instance.GetUserById(id);
         }
 
         public IEnumerable<User> GetUserByName(string name)
@@ -40,9 +40,14 @@ namespace ShopRepository
             return UserDao.Instance.GetUserByUserNamePass(username, password);
         }
 
-        public void Update(User user)
+        public async Task Update(User user)
         {
-            UserDao.Instance.Update(user);
+            await UserDao.Instance.Update(user);
+        }
+
+        public async Task<bool> ChangeStatus(int id)
+        {
+            return await UserDao.Instance.ChangeStatus(id);
         }
     }
 }

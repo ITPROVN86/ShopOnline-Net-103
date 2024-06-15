@@ -1,4 +1,5 @@
 ﻿using ShopBusinessLogic.Models;
+using ShopDataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,13 @@ namespace ShopRepository
 {
     public interface IUserRepository
     {
-        IEnumerable<User> GetAllUser();
-        User GetUserById(int id);
-        void Add(User user);
-        void Update(User user);
-        void Delete(int id);
+        Task<IEnumerable<User>> GetAllUser();
+        Task<User> GetUserById(int id);
+        Task Add(User user);
+        Task Update(User user);
+        Task Delete(int id);
         User GetUserByUserNamePass(string username, string password);
         IEnumerable<User> GetUserByName(string name);
+        Task<bool> ChangeStatus(int id);
     }
 }

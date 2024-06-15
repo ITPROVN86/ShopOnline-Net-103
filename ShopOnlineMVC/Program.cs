@@ -23,7 +23,6 @@ namespace ShopOnlineMVC
                 options.LoginPath = new PathString("/Admin/Login/Index");
             });
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
             builder.Services.AddScoped(typeof(Net103Context));
             builder.Services.AddScoped<UserDao>();
             builder.Services.AddScoped<CategoryDao>();

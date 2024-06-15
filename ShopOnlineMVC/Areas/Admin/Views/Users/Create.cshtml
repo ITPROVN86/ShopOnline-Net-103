@@ -1,0 +1,120 @@
+﻿@model ShopBusinessLogic.Models.User
+
+@{
+    ViewData["Title"] = "Tạo mới Người dùng";
+}
+<link href="~/Admin/js/iCheck/skins/minimal/minimal.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/red.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/green.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/blue.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/yellow.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/purple.css" rel="stylesheet">
+<header class="panel-heading">
+    Tạo mới Người dùng
+</header>
+<div class="processing-preview hidden">
+</div>
+<div class="panel-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-align">
+                @{
+                    if (TempData["AlertMessage"] != null)
+                    {
+                        <div id="alertBox" class="alert @TempData["Type"]">
+                            @TempData["AlertMessage"]
+                        </div>
+                    }
+                }
+            </div>
+            <form asp-action="Create" class="form-horizontal">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="UserName" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FullName" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RoleId" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <select asp-for="RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
+                        <span asp-validation-for="RoleId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group icheck minimal-blue">
+                    <label class="col-lg-2 col-sm-2 control-label">&nbsp;</label>
+                    <div class="col-lg-6">
+                        <div class="checkbox single-row ">
+                            <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-2 control-label">&nbsp;</label>
+                    <div class="col-lg-6">
+                        @Html.ActionLink("Quay trở lại", "Index", "Users", null, new { @class = "btn btn-primary" })
+                        <input type="submit" value="Tạo mới" onclick="return DisplayProgressMessage(this, 'Đang cập nhật...');" class="btn btn-danger" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function DisplayProgressMessage(ctl, msg) {
+            //if use the submit button, you can use event.preventDefault to prevent the default submit form behavior.
+            event.preventDefault();
+            // Turn off the "Save" button and change text
+            $(ctl).prop("disabled", true).val(msg);
+            // Gray out background on page
+            //$("body").addClass("submit-progress-bg");
+            // Wrap in setTimeout so the UI can update the spinners
+            //$(".processing-preview").removeClass("hidden");
+            //submit the form.
+            setTimeout(function () {
+                $("form").submit();
+                $(".processing-preview").addClass("hidden");
+                $("body").removeClass("submit-progress-bg");
+                $(ctl).prop("disabled", false).val("Tạo mới");
+            }, 1000);
+            return false;
+        }
+        $(function () {
+            $('#alertBox').removeClass('hide');
+            $('#alertBox').delay(3000).slideUp(500);
+        });
+    </script>
+    <script src="~/Admin/js/iCheck/jquery.icheck.js"></script>
+    <!--icheck init -->
+    <script src="~/Admin/js/icheck-init.js"></script>
+}

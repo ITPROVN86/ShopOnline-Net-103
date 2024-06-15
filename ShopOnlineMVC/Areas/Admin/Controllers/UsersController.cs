@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -17,96 +16,121 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
     [Authorize(AuthenticationSchemes = "Admin")]
-    public class CategoryController : BaseController
+    public class UsersController : BaseController
     {
-        ICategoryRepository categoryRepository = null;
+        IUserRepository userRepository;
+        IRoleRepository roleRepository;
 
-        public CategoryController()
+        public UsersController()
         {
-            categoryRepository = new CategoryRepository();
+            userRepository = new UserRepository();
+            roleRepository = new RoleRepository();
         }
 
-        // GET: Admin/Category
+        // GET: Admin/Users
         public async Task<IActionResult> Index(string searchString, int? page, string sortby)
         {
             TempData["searchString"] = searchString != null ? searchString.ToLower() : "";
-            var category = categoryRepository.GetAllCategory().Where(c => Common.ConvertToUnSign(c.CategoryName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
+            var users = await userRepository.GetAllUser();
+            users= users.Where(c => Common.ConvertToUnSign(c.FullName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase));
             switch (sortby)
             {
                 case "name":
-                    category = category.OrderBy(o => o.CategoryName);
+                    users = users.OrderBy(o => o.FullName);
                     break;
                 case "namedesc":
-                    category = category.OrderByDescending(o => o.CategoryName);
+                    users = users.OrderByDescending(o => o.FullName);
                     break;
                 default:
                     break;
             }
             ViewBag.Page = 10;
-            return View(category.ToPagedList(page ?? 1, (int)ViewBag.Page));
+            var pagedUsers = await users.ToPagedListAsync(page ?? 1, (int)ViewBag.Page);
+            return View(pagedUsers);
         }
 
-        // GET: Admin/Category/Create
+
+        // GET: Admin/Users/Create
         public IActionResult Create()
         {
+            ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName");
             return View();
         }
 
-        // POST: Admin/Category/Create
+        [HttpPost]
+        public async Task<JsonResult> ChangeStatus(int id)
+        {
+            var result = await userRepository.ChangeStatus(id);
+            return Json(new
+            {
+                status = result
+            });
+        }
+
+        // POST: Admin/Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Status")] Category category)
+        public async Task<IActionResult> Create([Bind("UserId,UserName,Email,Password,FullName,RoleId,Status")] User user)
         {
             if (ModelState.IsValid)
             {
-                
-                categoryRepository.Add(category);
+                if (string.IsNullOrEmpty(user.Password))
+                {
+                    SetAlert(Constant.PASSWORD_FAIL, "error");
+                    ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+                    return View(user);
+                }
+                user.Password = Common.EncryptMD5(user.Password);
+                await userRepository.Add(user);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+            return View(user);
         }
 
-        // GET: Admin/Category/Edit/5
+        // GET: Admin/Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var category = categoryRepository.GetCategoryById(Convert.ToInt32(id));
-            if (category == null)
+            var user = await userRepository.GetUserById(Convert.ToInt32(id));
+            if (user == null)
             {
                 return NotFound();
             }
-            return View(category);
+            ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+            return View(user);
         }
 
-        // POST: Admin/Category/Edit/5
+        // POST: Admin/Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Status")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,UserName,Email,Password,FullName,RoleId,Status")] User user)
         {
             if (ModelState.IsValid)
             {
-                categoryRepository.Update(category);
+                await userRepository.Update(user);
                 SetAlert(Constant.UPDATE_SUCCESS, "success");
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["RoleId"] = new SelectList(roleRepository.GetAllRole(), "RoleId", "RoleName", user.RoleId);
+            return View(user);
         }
 
         [HttpPost]
-        public JsonResult DeleteId(int id)
+        public async Task<JsonResult> DeleteId(int id)
         {
             try
             {
-                var category = categoryRepository.GetCategoryById(Convert.ToInt32(id));
-                if (category == null)
+                var user = await userRepository.GetUserById(Convert.ToInt32(id));
+                if (user == null)
                 {
                     return Json(new { success = false, message = "Không tìm thấy bản ghi" });
                 }
-                categoryRepository.Delete(id);
+                await userRepository.Delete(id);
                 SetAlert(Constant.DELETE_SUCCESS, "success");
                 return Json(new
                 {
@@ -118,23 +142,12 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
-        [HttpPost]
-        public JsonResult ChangeStatus(int id)
-        {
-            var result = categoryRepository.ChangeStatus(id);
-            return Json(new
-            {
-                status = result
-            });
-        }
-
         public JsonResult ListName(string q)
         {
             if (!string.IsNullOrEmpty(q))
             {
-                var data = categoryRepository.GetCategoryByName(q.ToLower());
-                var responseData = data.Select(c =>c.CategoryName).ToList();
+                var data = userRepository.GetUserByName(q.ToLower());
+                var responseData = data.Select(c => c.FullName).ToList();
                 return Json(new
                 {
                     data = responseData,
@@ -146,6 +159,5 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 status = false
             });
         }
-
     }
 }
