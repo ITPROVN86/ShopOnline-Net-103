@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,12 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
     {
         private readonly IProductRepository productRepository;
         private readonly ICategoryRepository categoryRepository;
+        private readonly IUserRepository userRepository;
         public ProductsController()
         {
             productRepository = new ProductRepository();
             categoryRepository = new CategoryRepository();
+            userRepository = new UserRepository();
         }
 
         // GET: Admin/Products
@@ -76,7 +79,16 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = User as ClaimsPrincipal;
+                var userName = user?.FindFirstValue(ClaimTypes.Name);
+                var userInfo = await userRepository.GetAllUser();
+                userInfo = userInfo.Where(u => u.UserName == userName);
+                product.UserPost = userInfo.ToList()[0].UserId;
+
+                product.DateUpdate = Common.GetServerDateTime();
+
                 await productRepository.Add(product);
+                SetAlert(Constant.UPDATE_SUCCESS, Constant.SUCCESS);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "CategoryId", "CategoryName", product.CategoryId);
@@ -109,7 +121,8 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                    await productRepository.Update(product);
+                await productRepository.Update(product);
+                SetAlert(Constant.UPDATE_SUCCESS, Constant.SUCCESS);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "CategoryId", "CategoryName", product.CategoryId);

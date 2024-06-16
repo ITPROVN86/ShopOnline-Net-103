@@ -1,76 +1,145 @@
 ﻿@model ShopBusinessLogic.Models.Product
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Tạo mới Sản phẩm";
 }
-
-<h1>Create</h1>
-
-<h4>Product</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ProductName" class="control-label"></label>
-                <input asp-for="ProductName" class="form-control" />
-                <span asp-validation-for="ProductName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ncontent" class="control-label"></label>
-                <input asp-for="Ncontent" class="form-control" />
-                <span asp-validation-for="Ncontent" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Stock" class="control-label"></label>
-                <input asp-for="Stock" class="form-control" />
-                <span asp-validation-for="Stock" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateUpdate" class="control-label"></label>
-                <input asp-for="DateUpdate" class="form-control" />
-                <span asp-validation-for="DateUpdate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserPost" class="control-label"></label>
-                <select asp-for="UserPost" class ="form-control" asp-items="ViewBag.UserPost"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<link href="~/Admin/js/iCheck/skins/minimal/minimal.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/red.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/green.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/blue.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/yellow.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/purple.css" rel="stylesheet">
+<header class="panel-heading">
+    Tạo mới Sản phẩm
+</header>
+<div class="processing-preview hidden">
 </div>
+<div class="panel-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-align">
+                @{
+                    if (TempData["AlertMessage"] != null)
+                    {
+                        <div id="alertBox" class="alert @TempData["Type"]">
+                            @TempData["AlertMessage"]
+                        </div>
+                    }
+                }
+            </div>
+            <form asp-action="Create" class="form-horizontal">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="ProductName" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="ProductName" class="form-control" />
+                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { rows = "4", @class = "form-control" }})
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Ncontent" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="Ncontent" class="form-control" />
+                        <span asp-validation-for="Ncontent" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImageUrl" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="ImageUrl" class="form-control" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Stock" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="Stock" class="form-control" />
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DateUpdate" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <input asp-for="DateUpdate" class="form-control" />
+                        <span asp-validation-for="DateUpdate" class="text-danger"></span>
+                    </div>
+                </div>
+@*                 <div class="form-group">
+                    <label asp-for="UserPost" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-6">
+                        <select asp-for="UserPost" class="form-control" asp-items="ViewBag.UserPost"></select>
+                    </div>
+                </div> *@
+                <div class="form-group icheck minimal-blue">
+                    <label class="col-lg-2 col-sm-2 control-label">&nbsp;</label>
+                    <div class="col-lg-6">
+                        <div class="checkbox single-row ">
+                            <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-2 control-label">&nbsp;</label>
+                    <div class="col-lg-6">
+                        @Html.ActionLink("Quay trở lại", "Index", "Products", null, new { @class = "btn btn-primary" })
+                        <input type="submit" value="Tạo mới" onclick="return DisplayProgressMessage(this, 'Đang cập nhật...');" class="btn btn-danger" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function DisplayProgressMessage(ctl, msg) {
+            //if use the submit button, you can use event.preventDefault to prevent the default submit form behavior.
+            event.preventDefault();
+            // Turn off the "Save" button and change text
+            $(ctl).prop("disabled", true).val(msg);
+            // Gray out background on page
+            //$("body").addClass("submit-progress-bg");
+            // Wrap in setTimeout so the UI can update the spinners
+            //$(".processing-preview").removeClass("hidden");
+            //submit the form.
+            setTimeout(function () {
+                $("form").submit();
+                $(".processing-preview").addClass("hidden");
+                $("body").removeClass("submit-progress-bg");
+                $(ctl).prop("disabled", false).val("Tạo mới");
+            }, 1000);
+            return false;
+        }
+        $(function () {
+            $('#alertBox').removeClass('hide');
+            $('#alertBox').delay(3000).slideUp(500);
+        });
+    </script>
+    <script src="~/Admin/js/iCheck/jquery.icheck.js"></script>
+    <!--icheck init -->
+    <script src="~/Admin/js/icheck-init.js"></script>
 }

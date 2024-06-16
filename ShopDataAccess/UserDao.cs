@@ -64,6 +64,11 @@ namespace ShopDataAccess
             return _context.Users.Where(u => u.FullName.Contains(name)).ToList();
         }
 
+/*        public User GetUserByUserName(string name)
+        {
+            return _context.Users.Where(u => u.UserName.Contains(name)).ToList();
+        }*/
+
         public async Task<bool> ChangeStatus(int id)
         {
             var category =await GetUserById(id);
