@@ -1,4 +1,5 @@
-﻿using ShopBusinessLogic.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ShopBusinessLogic.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,43 +10,45 @@ namespace ShopDataAccess
 {
     public class ProductDao : SingletonBase<ProductDao>
     {
-        private Net103Context _context;
-        public IEnumerable<Product> GetProductAll()
+        public async Task<IEnumerable<Product>> GetProductAll()
         {
-            return _context.Products.ToList();
+            return await _context.Products.ToListAsync();
         }
-        public Product GetProductById(int id)
+        public async Task<Product> GetProductById(int id)
         {
-            var product = _context.Products.Find(id);
+            var product = await _context.Products.FindAsync(id);
             if (product == null) return null;
 
             return product;
         }
-        public void Add(Product product)
+        public async Task Add(Product product)
         {
             _context.Products.Add(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Update(Product product)
+        public async Task Update(Product product)
         {
-            var existingItem = _context.Products.Find(product.ProductId);
-            if (existingItem == null) return;
-            _context.Products.Update(product);
-            _context.SaveChanges();
+            var existingItem = await GetProductById(product.ProductId);
+            if (existingItem != null)
+            {
+                _context.Entry(existingItem).CurrentValues.SetValues(product);
+                await _context.SaveChangesAsync();
+            }
+
         }
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var role = _context.Products.Find(id);
+            var role = await GetProductById(id);
             if (role != null)
             {
                 _context.Products.Remove(role);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public IEnumerable<Product> GetProductByName(string name)
+        public async Task<IEnumerable<Product>> GetProductByName(string name)
         {
-            return _context.Products.Where(u => u.ProductName.Contains(name)).ToList();
+            return await _context.Products.Where(u => u.ProductName.Contains(name)).ToListAsync();
         }
     }
 }

@@ -10,34 +10,34 @@ namespace ShopRepository
 {
     public class ProductRepository : IProductRepository
     {
-        public void Add(Product product)
+        public async Task Add(Product product)
         {
-            ProductDao.Instance.Add(product);
+            await ProductDao.Instance.Add(product);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            ProductDao.Instance.Delete(id);
+            await ProductDao.Instance.Delete(id);
         }
 
-        public IEnumerable<Product> GetAllProduct()
+        public async Task<IEnumerable<Product>> GetAllProduct()
         {
-            return ProductDao.Instance.GetProductAll();
+            return await ProductDao.Instance.GetProductAll();
         }
 
-        public Product GetProductById(int id)
+        public async Task<Product> GetProductById(int id)
         {
-            return ProductDao.Instance.GetProductById(id);
+            return await ProductDao.Instance.GetProductById(id);
         }
 
-        public IEnumerable<Product> GetProductByName(string name)
+        public async Task<IEnumerable<Product>> GetProductByName(string name)
         {
-            return ProductDao.Instance.GetProductByName(name);
+            return await ProductDao.Instance.GetProductByName(name);
         }
 
-        public void Update(Product product)
+        public async Task Update(Product product)
         {
-            ProductDao.Instance.Update(product);
+            await ProductDao.Instance.Update(product);
         }
     }
 }

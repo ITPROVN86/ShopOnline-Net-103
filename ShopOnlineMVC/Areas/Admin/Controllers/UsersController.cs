@@ -27,30 +27,19 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
             roleRepository = new RoleRepository();
         }
 
-        // GET: Admin/Users
-        public async Task<IActionResult> Index(string searchString, int? page, string sortby, int? roleId)
+        
+
+        [HttpGet]
+        public async Task<IActionResult> Index(string searchString, int? page)
         {
-            TempData["searchString"] = searchString != null ? searchString.ToLower() : "";
+            ViewBag.SearchString = searchString;
             var users = await userRepository.GetAllUser();
-            if (roleId.HasValue && !string.IsNullOrEmpty(searchString))
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                users = users.Where(c => Common.ConvertToUnSign(c.FullName).Contains(searchString != null ? Common.ConvertToUnSign(TempData["searchString"].ToString()) : "", StringComparison.OrdinalIgnoreCase) && c.RoleId == roleId);
+                users = users.Where(s => s.UserName.Contains(searchString) || s.FullName.Contains(searchString) || s.Email.Contains(searchString));
             }
-            else if (roleId.HasValue)
-            {
-                users = users.Where(c => c.RoleId == roleId);
-            }
-            switch (sortby)
-            {
-                case "name":
-                    users = users.OrderBy(o => o.FullName);
-                    break;
-                case "namedesc":
-                    users = users.OrderByDescending(o => o.FullName);
-                    break;
-                default:
-                    break;
-            }
+
             IEnumerable<Role> roles = await roleRepository.GetAllRole();
             // Tạo SelectList từ danh sách quyền truy cập
             SelectList selectList = new SelectList(roles, "RoleId", "RoleName");
@@ -58,9 +47,38 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
             // Lưu SelectList vào ViewBag để sử dụng trong View
             ViewBag.RoleId = selectList;
 
-            ViewBag.Page = 10;
-            var pagedUsers = await users.ToPagedListAsync(page ?? 1, (int)ViewBag.Page);
-            return View(pagedUsers);
+            ViewBag.Page = 5;
+            int pageNumber = (page ?? 1);
+            return View(await users.ToPagedListAsync(pageNumber, (int)ViewBag.Page));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(string searchString, int? page, int roleId)
+        {
+            ViewBag.PageNext = page;
+            ViewBag.SearchString = searchString;
+            var users = await userRepository.GetAllUser();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(s => s.UserName.Contains(searchString) || s.FullName.Contains(searchString) || s.Email.Contains(searchString));
+            }
+
+            if (roleId != 0)
+            {
+                users = users.Where(u => u.RoleId == roleId);
+            }
+
+            IEnumerable<Role> roles = await roleRepository.GetAllRole();
+            // Tạo SelectList từ danh sách quyền truy cập
+            SelectList selectList = new SelectList(roles, "RoleId", "RoleName");
+
+            // Lưu SelectList vào ViewBag để sử dụng trong View
+            ViewBag.RoleId = selectList;
+
+            ViewBag.Page = 5;
+            int pageNumber = (page ?? 1);
+            return View(await users.ToPagedListAsync(pageNumber, (int)ViewBag.Page));
         }
 
 

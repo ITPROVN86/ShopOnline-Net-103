@@ -27,9 +27,9 @@ public partial class Product
 
     public bool? Status { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual Category? Category { get; set; } = null!;
 
-    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+    public virtual ICollection<OrderDetail>? OrderDetails { get; set; } = new List<OrderDetail>();
 
-    public virtual User UserPostNavigation { get; set; } = null!;
+    public virtual User? UserPostNavigation { get; set; } = null!;
 }

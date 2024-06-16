@@ -9,11 +9,11 @@ namespace ShopRepository
 {
     public interface IProductRepository
     {
-        IEnumerable<Product> GetAllProduct();
-        Product GetProductById(int id);
-        void Add(Product product);
-        void Update(Product product);
-        void Delete(int id);
-        IEnumerable<Product> GetProductByName(string name);
+        Task<IEnumerable<Product>> GetAllProduct();
+        Task<Product> GetProductById(int id);
+        Task Add(Product product);
+        Task Update(Product product);
+        Task Delete(int id);
+        Task<IEnumerable<Product>> GetProductByName(string name);
     }
 }

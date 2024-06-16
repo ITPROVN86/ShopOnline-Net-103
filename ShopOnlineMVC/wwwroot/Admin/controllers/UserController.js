@@ -88,9 +88,25 @@
                 return false;
             }
         });
-        $("#form-search").on("submit", function () {
-            $("#loadingModal").modal('show'); // Hiển thị modal loading
-        });
+      /*  $("#form-search").on("submit", function () {
+            event.preventDefault();
+            $("#loadingModal").modal('show');
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Index", "Users")',
+                data: $(this).serialize(),
+                success: function (result) {
+                    $('#targetElement').html(result);
+                },
+                error: function (xhr, status, error) {
+                    alert('Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại.');
+                }
+            });
+            
+        });*/
+
+       
         $(function () {
             $('#alertBox').removeClass('hide');
             $('#alertBox').delay(5000).slideUp(500);
@@ -105,3 +121,21 @@ function callIndexAction(select) {
         $("#form-search").submit();
     }, 1000);
 }
+
+/*$(document).on('click', '.pagination a', function (event) {
+    event.preventDefault();
+    var page = $(this).attr('data-page');
+    var form = $('#form-search');
+    var formData = form.serialize() + '&page=' + page;
+    $.ajax({
+        type: 'POST',
+        url: '/Admin/Users/Index',
+        data: formData,
+        success: function (result) {
+            //$('#userTable').html($(result).find('#userTable').html());
+        },
+        error: function (xhr, status, error) {
+            alert('Có lỗi xảy ra khi phân trang. Vui lòng thử lại.');
+        }
+    });
+});*/

@@ -24,7 +24,7 @@
         }
     </div>
     <div class="row form-body">
-        @using (Html.BeginForm("Index", "Users", FormMethod.Get, new { id = "form-search" }))
+        @using (Html.BeginForm("Index", "Users", FormMethod.Post, new { id = "form-search" }))
         {
             <div class="form-group">
                 <div class="col-md-6">
@@ -41,7 +41,7 @@
             </div>
         }
         <div class="form-group" style="clear:both">&nbsp;</div>
-        <div class="form-group">
+        <div class="form-group" id="userTable">
             <table class="table">
                 <thead>
                     <tr>
@@ -108,8 +108,8 @@
                      PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
             {
                 HttpMethod = "POST",
-                UpdateTargetId = "targetElement",
-                OnSuccess = "onAjaxSuccess",
+                UpdateTargetId = "userTable",
+                OnSuccess = "function (data) { $('#userTable').html(data); }",
                 OnFailure = "onAjaxFailure"
             }))
         </div>
