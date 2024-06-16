@@ -25,7 +25,7 @@ public partial class Product
 
     public int UserPost { get; set; }
 
-    public bool? Status { get; set; }
+    public bool Status { get; set; }
 
     public virtual Category? Category { get; set; } = null!;
 

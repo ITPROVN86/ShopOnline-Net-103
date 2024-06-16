@@ -39,5 +39,10 @@ namespace ShopRepository
         {
             await ProductDao.Instance.Update(product);
         }
+
+        public async Task<bool> ChangeStatus(int id)
+        {
+            return await ProductDao.Instance.ChangeStatus(id);
+        }
     }
 }

@@ -15,5 +15,6 @@ namespace ShopRepository
         Task Update(Product product);
         Task Delete(int id);
         Task<IEnumerable<Product>> GetProductByName(string name);
+        Task<bool> ChangeStatus(int id);
     }
 }

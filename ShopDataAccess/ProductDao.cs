@@ -12,7 +12,7 @@ namespace ShopDataAccess
     {
         public async Task<IEnumerable<Product>> GetProductAll()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products.Include(p=>p.UserPostNavigation).Include(p=>p.Category).ToListAsync();
         }
         public async Task<Product> GetProductById(int id)
         {
@@ -48,7 +48,15 @@ namespace ShopDataAccess
 
         public async Task<IEnumerable<Product>> GetProductByName(string name)
         {
-            return await _context.Products.Where(u => u.ProductName.Contains(name)).ToListAsync();
+            return await _context.Products.Where(u => u.ProductName.Contains(name)).Include(p => p.UserPostNavigation).Include(p => p.Category).ToListAsync();
+        }
+
+        public async Task<bool> ChangeStatus(int id)
+        {
+            var product = await GetProductById(id);
+            product.Status = !product.Status;
+            _context.SaveChanges();
+            return Convert.ToBoolean(product.Status);
         }
     }
 }
