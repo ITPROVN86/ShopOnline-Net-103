@@ -33,9 +33,9 @@
                         @Html.TextBox("SearchString", TempData["searchString"], null, new { @class = "form-control", @placeholder = "Nhập từ khoá cần tìm kiếm" })
                     </div>
                 </div>
-                @* <div class="col-md-3">
-            @Html.DropDownList("categoryId", (IEnumerable<SelectListItem>)ViewBag.CategoryId, "All Category", new { @class = "form-control", @id = "cboSearchCategoryId", @onchange = "callIndexAction(this)" })
-            </div> *@
+                <div class="col-md-3">
+                    @Html.DropDownList("categoryId", (IEnumerable<SelectListItem>)ViewData["CategoryId"], "All Category", new { @class = "form-control", @id = "cboSearchCategoryId", @onchange = "callIndexAction(this)" })
+            </div>
                 <div class="col-md-3">
                     <button class="btn btn-danger"><i class="fa fa-search"></i> Tìm kiếm</button>
                 </div>

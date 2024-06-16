@@ -47,6 +47,15 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 default:
                     break;
             }
+
+            /*IEnumerable<Category> roles = await categoryRepository.GetAllCategory();
+            // Tạo SelectList từ danh sách quyền truy cập
+            SelectList selectList = new SelectList(roles, "CategoryId", "CategoryName");
+
+            // Lưu SelectList vào ViewBag để sử dụng trong View
+            ViewBag.CategoryId = selectList;*/
+            ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "CategoryId", "CategoryName");
+
             ViewBag.Page = 10;
             return View(product.ToPagedList(page ?? 1, (int)ViewBag.Page));
         }
@@ -54,12 +63,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         // GET: Admin/Products/Create
         public async Task<IActionResult> Create()
         {
-            IEnumerable<Category> roles = await categoryRepository.GetAllCategory();
-            // Tạo SelectList từ danh sách quyền truy cập
-            SelectList selectList = new SelectList(roles, "CategoryId", "CategoryName");
-
-            // Lưu SelectList vào ViewBag để sử dụng trong View
-            ViewBag.RoleId = selectList;
+            ViewData["CategoryId"] = new SelectList(await categoryRepository.GetAllCategory(), "CategoryId", "CategoryName");
             return View();
         }
 

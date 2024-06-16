@@ -99,3 +99,10 @@
     }
 }
 common.init();
+
+function callIndexAction(select) {
+    $("#loadingModal").modal('show');
+    setTimeout(function () {
+        $("#form-search").submit();
+    }, 1000);
+}
