@@ -1,20 +1,17 @@
 ﻿ClassicEditor
     .create(document.querySelector('#editor'), {
         extraPlugins: [CustomUploadAdapterPlugin],
-        toolbar: ['Essentials',
-            'Paragraph',
-            'Heading', '|',
-            'Bold',
+        plugins: ['Essentials', 'Paragraph', 'Heading', 'Bold',
             'Italic',
             'Underline',
-            'Strikethrough', '|',
+            'Strikethrough',
             'SourceEditing',
             'Subscript',
             'Superscript',
             'Alignment',
             'Indent',
             'IndentBlock',
-            'BlockQuote', '|',
+            'BlockQuote',
             'Link',
             'Image',
             'ImageCaption',
@@ -22,15 +19,15 @@
             'ImageToolbar',
             'ImageUpload',
             'List',
-            'MediaEmbed', '|',
+            'MediaEmbed',
             'PasteFromOffice',
-            'insertTable',
+            'Table',
             'Highlight',
             'FontFamily',
             'FontSize',
             'FontColor',
-            'FontBackgroundColor', 'GeneralHtmlSupport', /* ... */]
-        ,
+            'FontBackgroundColor',
+            'GeneralHtmlSupport'],
         image: {
             // Cấu hình các kiểu hình ảnh
             styles: [
@@ -103,4 +100,11 @@ function callIndexAction(select) {
     setTimeout(function () {
         $("#form-search").submit();
     }, 1000);
+}
+
+ImageFile.onchange = evt => {
+    const [file] = ImageFile.files
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+    }
 }

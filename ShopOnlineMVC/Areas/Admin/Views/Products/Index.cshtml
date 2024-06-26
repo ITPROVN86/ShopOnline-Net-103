@@ -48,6 +48,9 @@
                     <tr>
                         <th>#</th>
                         <th>
+                            @Html.DisplayNameFor(model => model.ImageUrl)
+                        </th>
+                        <th>
                             @Html.DisplayNameFor(model => model.ProductName)
                         </th>
                         <th>
@@ -84,6 +87,9 @@
                     {
                         <tr>
                             <td class="text-center">@dem</td>
+                            <td class="text-center">
+                                <img src="~/Upload/Avatar/@item.ImageUrl" style="width: 100px; border-radius: 5px;"/>
+                            </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.ProductName)
                             </td>

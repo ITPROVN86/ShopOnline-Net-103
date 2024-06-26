@@ -22,11 +22,13 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         private readonly IProductRepository productRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IUserRepository userRepository;
-        public ProductsController()
+        private readonly IWebHostEnvironment webHostEnvironment;
+        public ProductsController(IWebHostEnvironment webHostEnvironment)
         {
             productRepository = new ProductRepository();
             categoryRepository = new CategoryRepository();
             userRepository = new UserRepository();
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Admin/Products
@@ -75,7 +77,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,Description,Ncontent,ImageUrl,CategoryId,Price,Stock,DateUpdate,UserPost,Status")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,Description,Ncontent,ImageUrl,ImageFile,CategoryId,Price,Stock,DateUpdate,UserPost,Status")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +88,11 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 product.UserPost = userInfo.ToList()[0].UserId;
 
                 product.DateUpdate = Common.GetServerDateTime();
-
+                if (product.ImageFile != null)
+                {
+                    string uniqueFileName = UploadedFile(product);
+                    product.ImageUrl = uniqueFileName;
+                }
                 await productRepository.Add(product);
                 SetAlert(Constant.UPDATE_SUCCESS, Constant.SUCCESS);
                 return RedirectToAction(nameof(Index));
@@ -112,7 +118,7 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,Description,Ncontent,ImageUrl,CategoryId,Price,Stock,DateUpdate,UserPost,Status")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,Description,Ncontent,ImageUrl,ImageFile,CategoryId,Price,Stock,DateUpdate,UserPost,Status")] Product product)
         {
             if (id != product.ProductId)
             {
@@ -121,6 +127,11 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                if (product.ImageFile != null)
+                {
+                    string uniqueFileName = UploadedFile(product);
+                    product.ImageUrl = uniqueFileName;
+                }
                 await productRepository.Update(product);
                 SetAlert(Constant.UPDATE_SUCCESS, Constant.SUCCESS);
                 return RedirectToAction(nameof(Index));
@@ -178,6 +189,22 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
             {
                 status = false
             });
+        }
+
+        public string UploadedFile(Product product)
+        {
+            string wwwRootPath = this.webHostEnvironment.WebRootPath;
+            var exe = product.ImageFile.FileName;
+            string fileName = Path.GetFileNameWithoutExtension(exe);
+            string extension = Path.GetExtension(product.ImageFile.FileName);
+            product.ImageUrl = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+            string path = Path.Combine(wwwRootPath + "/Upload/Avatar/", fileName);
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                product.ImageFile.CopyTo(fileStream);
+            }
+            ViewBag.Anh = product.ImageUrl;
+            return fileName;
         }
 
         [HttpPost]

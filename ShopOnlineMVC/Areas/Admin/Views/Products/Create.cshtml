@@ -51,8 +51,9 @@
                 <div class="form-group">
                     <label asp-for="ImageUrl" class="col-lg-2 col-sm-2 control-label"></label>
                     <div class="col-lg-10">
-                        <input asp-for="ImageUrl" class="form-control" />
-                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <input asp-for="ImageFile" class="form-control" type="file" />
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        <img id="preview" src="@Url.Content(ViewBag.Anh==null?"~/Admin/images/avatar1.jpg":"~/Upload/Avatar/"+ViewBag.Anh)" class="rounded-circle" height="40" width="40" />
                     </div>
                 </div>
                 <div class="form-group">
