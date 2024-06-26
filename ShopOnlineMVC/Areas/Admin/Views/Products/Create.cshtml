@@ -12,8 +12,6 @@
 <header class="panel-heading">
     Tạo mới Sản phẩm
 </header>
-<div class="processing-preview hidden">
-</div>
 <div class="panel-body">
     <div class="row">
         <div class="col-md-12">
@@ -27,59 +25,59 @@
                     }
                 }
             </div>
-            <form asp-action="Create" class="form-horizontal">
+            <form asp-action="Create" class="form-horizontal" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="ProductName" class="col-lg-2 col-sm-2 control-label"></label>
-                    <div class="col-lg-6">
+                    <div class="col-lg-10">
                         <input asp-for="ProductName" class="form-control" />
                         <span asp-validation-for="ProductName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label asp-for="Description" class="col-lg-2 col-sm-2 control-label"></label>
-                    <div class="col-lg-6">
+                    <div class="col-lg-10">
                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { rows = "4", @class = "form-control" }})
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label asp-for="Ncontent" class="col-lg-2 col-sm-2 control-label"></label>
-                    <div class="col-lg-6">
-                        <input asp-for="Ncontent" class="form-control" />
-                        <span asp-validation-for="Ncontent" class="text-danger"></span>
+                    <div class="col-lg-10">
+                        <input type="hidden" asp-for="Ncontent" id="hiddenNcontent">
+                        <div id="editor"></div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label asp-for="ImageUrl" class="col-lg-2 col-sm-2 control-label"></label>
-                    <div class="col-lg-6">
+                    <div class="col-lg-10">
                         <input asp-for="ImageUrl" class="form-control" />
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label asp-for="CategoryId" class="col-lg-2 col-sm-2 control-label"></label>
-                    <div class="col-lg-6">
+                    <div class="col-lg-10">
                         <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
                     </div>
                 </div>
                 <div class="form-group">
                     <label asp-for="Price" class="col-lg-2 col-sm-2 control-label"></label>
-                    <div class="col-lg-6">
+                    <div class="col-lg-10">
                         <input asp-for="Price" class="form-control" />
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label asp-for="Stock" class="col-lg-2 col-sm-2 control-label"></label>
-                    <div class="col-lg-6">
+                    <div class="col-lg-10">
                         <input asp-for="Stock" class="form-control" />
                         <span asp-validation-for="Stock" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label asp-for="DateUpdate" class="col-lg-2 col-sm-2 control-label"></label>
-                    <div class="col-lg-6">
+                    <div class="col-lg-10">
                         <input asp-for="DateUpdate" class="form-control" />
                         <span asp-validation-for="DateUpdate" class="text-danger"></span>
                     </div>
@@ -100,9 +98,9 @@
                 </div>
                 <div class="form-group">
                     <label class="col-lg-2 col-sm-2 control-label">&nbsp;</label>
-                    <div class="col-lg-6">
+                    <div class="col-lg-10">
                         @Html.ActionLink("Quay trở lại", "Index", "Products", null, new { @class = "btn btn-primary" })
-                        <input type="submit" value="Tạo mới" onclick="return DisplayProgressMessage(this, 'Đang cập nhật...');" class="btn btn-danger" />
+                        <input type="submit" value="Tạo mới"  class="btn btn-danger" />
                     </div>
                 </div>
             </form>
@@ -110,30 +108,26 @@
     </div>
 
 </div>
-
+<!-- Modal Loading for BS 5 -->
+<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body  text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <p class="mt-2">Đang xử lý, vui lòng đợi...</p>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        DateTime currentDate = DateTime.Now;
     }
     <script>
-        function DisplayProgressMessage(ctl, msg) {
-            //if use the submit button, you can use event.preventDefault to prevent the default submit form behavior.
-            event.preventDefault();
-            // Turn off the "Save" button and change text
-            $(ctl).prop("disabled", true).val(msg);
-            // Gray out background on page
-            //$("body").addClass("submit-progress-bg");
-            // Wrap in setTimeout so the UI can update the spinners
-            //$(".processing-preview").removeClass("hidden");
-            //submit the form.
-            setTimeout(function () {
-                $("form").submit();
-                $(".processing-preview").addClass("hidden");
-                $("body").removeClass("submit-progress-bg");
-                $(ctl).prop("disabled", false).val("Tạo mới");
-            }, 1000);
-            return false;
-        }
+       
         $(function () {
             $('#alertBox').removeClass('hide');
             $('#alertBox').delay(3000).slideUp(500);
@@ -142,4 +136,8 @@
     <script src="~/Admin/js/iCheck/jquery.icheck.js"></script>
     <!--icheck init -->
     <script src="~/Admin/js/icheck-init.js"></script>
+    <script src="
+https://cdn.jsdelivr.net/npm/ckeditor5-classic-free-full-feature@35.4.1/build/ckeditor.min.js
+                "></script>
+    <script src="~/admin/controllers/ckeditorProduct.js?@currentDate"></script>
 }

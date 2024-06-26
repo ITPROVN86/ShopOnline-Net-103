@@ -1,79 +1,146 @@
 ﻿@model ShopBusinessLogic.Models.Product
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Cập nhật Sản phẩm";
 }
 
-<h1>Edit</h1>
+<link href="~/Admin/js/iCheck/skins/minimal/minimal.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/red.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/green.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/blue.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/yellow.css" rel="stylesheet">
+<link href="~/Admin/js/iCheck/skins/minimal/purple.css" rel="stylesheet">
+<header class="panel-heading">
+   Cập nhật Sản phẩm
+</header>
+<div class="panel-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-align">
+                @{
+                    if (TempData["AlertMessage"] != null)
+                    {
+                        <div id="alertBox" class="alert @TempData["Type"]">
+                            @TempData["AlertMessage"]
+                        </div>
+                    }
+                }
+            </div>
+            <form asp-action="Edit" class="form-horizontal" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ProductId" />
+                <div class="form-group">
+                    <label asp-for="ProductName" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <input asp-for="ProductName" class="form-control" />
+                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Ncontent" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <input type="hidden" asp-for="Ncontent" id="hiddenNcontent">
+                        <div id="editor"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImageUrl" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <input asp-for="ImageUrl" class="form-control" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Stock" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <input asp-for="Stock" class="form-control" />
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DateUpdate" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <input asp-for="DateUpdate" class="form-control" />
+                        <span asp-validation-for="DateUpdate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UserPost" class="col-lg-2 col-sm-2 control-label"></label>
+                    <div class="col-lg-10">
+                        <select asp-for="UserPost" class="form-control" asp-items="ViewBag.UserPost"></select>
+                        <span asp-validation-for="UserPost" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status" class="col-lg-2 col-sm-2 control-label">&nbsp;</label>
+                    <div class="col-lg-6">
+                        <input asp-for="Status" class="form-control" />
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-2 control-label">&nbsp;</label>
+                    <div class="col-lg-10">
+                        @Html.ActionLink("Quay trở lại", "Index", "Products", null, new { @class = "btn btn-primary" })
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<h4>Product</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ProductId" />
-            <div class="form-group">
-                <label asp-for="ProductName" class="control-label"></label>
-                <input asp-for="ProductName" class="form-control" />
-                <span asp-validation-for="ProductName" class="text-danger"></span>
+</div>
+<!-- Modal Loading for BS 5 -->
+<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body  text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only"></span>
+                </div>
+                <p class="mt-2">Đang xử lý, vui lòng đợi...</p>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ncontent" class="control-label"></label>
-                <input asp-for="Ncontent" class="form-control" />
-                <span asp-validation-for="Ncontent" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Stock" class="control-label"></label>
-                <input asp-for="Stock" class="form-control" />
-                <span asp-validation-for="Stock" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateUpdate" class="control-label"></label>
-                <input asp-for="DateUpdate" class="form-control" />
-                <span asp-validation-for="DateUpdate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserPost" class="control-label"></label>
-                <select asp-for="UserPost" class="form-control" asp-items="ViewBag.UserPost"></select>
-                <span asp-validation-for="UserPost" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        DateTime currentDate = DateTime.Now;
+    }
+    <script>
+
+        $(function () {
+            $('#alertBox').removeClass('hide');
+            $('#alertBox').delay(3000).slideUp(500);
+        });
+    </script>
+    <script src="~/Admin/js/iCheck/jquery.icheck.js"></script>
+    <!--icheck init -->
+    <script src="~/Admin/js/icheck-init.js"></script>
+    <script src="
+https://cdn.jsdelivr.net/npm/ckeditor5-classic-free-full-feature@35.4.1/build/ckeditor.min.js
+                            "></script>
+    <script src="~/admin/controllers/ckeditorProduct.js?@currentDate"></script>
 }

@@ -5739,3 +5739,7 @@ right: -1px;
 .table > thead > tr > th>a{
     color:white;
 }
+.ck-content{
+    min-height: 300px;
+    overflow: scroll;
+}

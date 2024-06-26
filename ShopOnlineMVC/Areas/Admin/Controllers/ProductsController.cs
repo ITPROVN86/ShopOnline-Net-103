@@ -179,5 +179,37 @@ namespace ShopOnlineMVC.Areas.Admin.Controllers
                 status = false
             });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile upload)
+        {
+            if (upload != null && upload.Length > 0)
+            {
+                // Get the current date and format it
+                var currentDate = DateTime.Now;
+                var year = currentDate.Year.ToString();
+                var month = currentDate.Month.ToString().PadLeft(2, '0');
+                var day = currentDate.Day.ToString().PadLeft(2, '0');
+
+                // Create the directory string and ensure the directory exists
+                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/upload/images", year, month);
+                Directory.CreateDirectory(directoryPath); // Creates all directories on the path if not exist
+
+                // Modify the filename to include the date
+                var fileName = $"{year}{month}{day}_{Path.GetFileName(upload.FileName)}";
+                var filePath = Path.Combine(directoryPath, fileName);
+
+                // Save the file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await upload.CopyToAsync(stream);
+                }
+
+                // Return the JSON result with the URL to the uploaded file
+                return Json(new { uploaded = true, url = $"/upload/images/{year}/{month}/{fileName}" });
+            }
+
+            return Json(new { uploaded = false, message = "Upload failed" });
+        }
     }
 }
